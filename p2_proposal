@@ -6,6 +6,7 @@ Improvements:
         -view schedule
             -click patient name in "calendar" to view their file
         -view vitals of patients
+        -add new problem
 2. ADT Officer View
     -For ADTs to:
         -add new patients
