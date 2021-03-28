@@ -1,0 +1,30 @@
+Improvements:
+1. Clinical View
+    -For clinicians to:
+        -edit password
+        -upload picture
+        -view schedule
+            -click patient name in "calendar" to view their file
+        -view vitals of patients
+2. ADT Officer View
+    -For ADTs to:
+        -add new patients
+        -update patient information
+        -change status of patients
+3. Patient View: Vitals
+    -weight
+    -height
+    -O2 levels
+    -Most recent patient vitals display
+    -record new vitals (in the tools menu)
+4. Patient View: Drug Administration
+    -add functionality to scan drug, patient, and provider and update patient file
+        -validation of drug against patient: raise error if incorrect
+5. Patient View: Vaccination
+    -add functionality to order new vaccines
+    -update patient file upon administration of vaccine
+6. Patient View: Tests
+    -order test in patient file
+    -lab system (barcode lab: update test based on loinc code)
+        -scan test code, scan provider ien, scan patient mrn
+            -take input to serve as test results
