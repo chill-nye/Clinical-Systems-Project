@@ -1,0 +1,33 @@
+
+{
+	"order":
+	{
+		"id":"ord123456",
+		"customer":
+		{
+			"id":		"cust0921",
+			"first-name":	"Dare",
+			"last-name":	"Obasanjo",
+			"address":
+			{
+				"street":	"One Microsoft Way",
+				"city":		"Redmond",
+				"state":	"WA",
+				"zip":		"98052"				
+			}
+		},
+		"items":{"compact-disk":
+		[
+			{
+				"price":	"16.95",
+				"artist":	"Nelly",
+				"title":	"Nellyville"
+			},
+			{
+				"price":	"17.55",
+				"artist":	"Baby D",
+				"title":	"Lil Chopper Toy"
+			}
+		]}
+	}
+}

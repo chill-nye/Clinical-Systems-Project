@@ -1,0 +1,12 @@
+[
+    {
+        "administration":[
+            {"drug":"PENICILLIN G SODIUM USP INJ 5000000UNIT/VIAL", "DIN":"00883751", "ProviderIEN":"63", "patientMRN":"12345", "Time":"09-12-2013 14:04"},
+            {"drug":"PENICILLIN G SODIUM USP INJ 5000000UNIT/VIAL", "DIN":"00883751", "ProviderIEN":"65", "patientMRN":"12345", "Time":"09-13-2013 14:04"}]
+    },
+    {
+        "administration":[
+            {"drug":"CODEINE PHOSPHATE LIQ INJ USP 30MG/ML", "DIN":"00544884", "ProviderIEN":"018", "patientMRN":"13", "Time":"09-12-2013 10:04"}
+        ]
+    }
+]

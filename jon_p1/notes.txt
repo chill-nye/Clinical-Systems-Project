@@ -1,0 +1,36 @@
+Submit a zip archive of your project including screenshots, clearly illustrating the added/improved functionality of your application:
+    –UI design that goes beyond the prototypes given in class
+    –Applications should at the very least implement the viewing functionality for at least 3 distinct resources/entities with structures similar to that of the FHIR standard 
+        (e.g., practitioner, patient, order, result, etc.)
+    –The resources/entities should be functionally and logically related through composition/referencing using either MongoDB join queries or application logic
+        e.g., since a Patient’s doctor is a Practitioner, there should be a logical link from a Patient record to one of more practitioners in the Employee collection
+        e.g., Since a Practitioner writes Orders, etc., an order record in the order collection should have a field that logically links the authoring practitioner in the Employee collection
+
+Application must make use of existing data standards to represent patient data
+    –Must use LOINC codes for lab tests identifiers
+    –Must use ICD10 codes for problems, diagnoses identifiers
+    –Must use DPD identifiers (ATC, DIN) for drug data identifiers
+
+Demonstrates login and session control functionality for practitioners
+    –e.g., storing username/id and password and last viewed patient in the employee record
+
+At least 3 pdf/screenshots of reports from collections–Ideally reports will include images
+    –Example reports/printouts:
+        Patients (patients.pdf) 
+            -wristband
+        Practitioners (practitioners.pdf) 
+            –badge
+        Orders (orders.pdf) 
+            –medication order
+            –Drug labels (drugs.pdf)
+            –Test labels (test.pdf)
+        Results (results.pdf) 
+            –results
+
+Reports must contain barcode technologies (linear, 2D etc.)
+
+Barcode automation functionality:
+    –Scanning patient bracelet/RFID selects the patient and display patient data 
+    –eMAR/BCMA (barcode medication administration)
+
+Demonstrates other improvements: e.g., password change functionality, RFID login, etc
