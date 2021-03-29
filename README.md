@@ -25,3 +25,4 @@ Employee badge IEN barcode scanning (login/logout) functionality
 New functionality quality of development (working implementation and demo)
 
 Testing
+testing 2
