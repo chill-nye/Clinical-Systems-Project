@@ -22,6 +22,11 @@ from modINFO74000.emr_db import MiniEMRMongo
 from modINFO74000.emr_misc_ui import *
 from modINFO74000.emr_const import *
 
+christian_path = 'C:/Users/Chill Nye/Documents/GitHub/Clinical-Systems-Project/jon_p1/images'
+christian_JSON_path = 'C:/Users/Chill Nye/Documents/GitHub/Clinical-Systems-Project/jon_p1/json_examples'
+scott_path = 'C:/Users/Chill Nye/Documents/GitHub/Clinical-Systems-Project/jon_p1/images'
+scott_JSON_path = 'C:/Users/Chill Nye/Documents/GitHub/Clinical-Systems-Project/jon_p1/json_examples'
+
 class CurrentProvider():
     Record=None
     provider_details = []
@@ -121,7 +126,13 @@ class LoginWindowDialogFrame(tk.Frame):
         #institution logo        
         logo_label=ttk.Label(self,text="Institution Logo")
         logo_label.grid(column=2,row=0,rowspan=2)
-        setLabelImage(logo_label,PATH_TO_IMAGE_FILES+'/conestoga_college_logo.png',2)
+        try:
+            setLabelImage(logo_label,PATH_TO_IMAGE_FILES+'/conestoga_college_logo.png',2)
+        except:
+            try:
+                setLabelImage(logo_label,christian_path+'/conestoga_college_logo.png',2)
+            except:
+                setLabelImage(logo_label,scott_path+'/conestoga_college_logo.png',2)
         
     def clear(self):
         #clear textboxes
