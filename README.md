@@ -24,5 +24,9 @@ Employee badge IEN barcode scanning (login/logout) functionality
 
 New functionality quality of development (working implementation and demo)
 
+<<<<<<< Updated upstream
 Testing
 testing 2
+=======
+I'm going to buy a new headset
+>>>>>>> Stashed changes
