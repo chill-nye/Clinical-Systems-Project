@@ -23,6 +23,10 @@ from  modINFO74000.emr_const import *
 from bson.objectid import ObjectId 
 import gridfs
 
+christian_path = 'C:/Users/Chill Nye/Documents/GitHub/Clinical-Systems-Project/jon_p1/images'
+christian_JSON_path = 'C:/Users/Chill Nye/Documents/GitHub/Clinical-Systems-Project/jon_p1/json_examples'
+scott_path = 'C:/Users/Chill Nye/Documents/GitHub/Clinical-Systems-Project/jon_p1/images'
+scott_JSON_path = 'C:/Users/Chill Nye/Documents/GitHub/Clinical-Systems-Project/jon_p1/json_examples'
 
 class TopDialogWindow(tk.Toplevel):
 
@@ -56,7 +60,13 @@ class LicenseWindow(TopDialogWindow):
     scrolledText.insert('end', __doc__)
 
 def unknownPhotoImage():
-    unknown_photo_img=tk.PhotoImage(file=PATH_TO_IMAGE_FILES+'/Unknown-person.gif')
+    try:
+        unknown_photo_img=tk.PhotoImage(file=PATH_TO_IMAGE_FILES+'/Unknown-person.gif')
+    except:
+        try:
+            unknown_photo_img=tk.PhotoImage(file=christian_path+'/Unknown-person.gif')
+        except:
+            unknown_photo_img=tk.PhotoImage(file=scott_path+'/Unknown-person.gif')
     #unknown_photo_img.configure(width=64,height=64)
     return unknown_photo_img.subsample(3)#to make the image smaller
 

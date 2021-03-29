@@ -34,9 +34,15 @@ def ParseCDOrderJSONString_GenerateJSON_AddNorahCD_CalculateTotalCost():
         json_file.close()
     except (FileNotFoundError):
         try:
-            christian_path + imagefilename
+            json_file=open(christian_JSON_path+"/json_test1.txt")
+                # load and try to parse the input string
+            data=json.load(json_file)
+            json_file.close()
         except:
-            scott_path + imagefilename
+            json_file=open(scott_JSON_path+"/json_test1.txt")
+                # load and try to parse the input string
+            data=json.load(json_file)
+            json_file.close()
 
     else:
         #success    
