@@ -34,3 +34,11 @@ Barcode automation functionality:
     –eMAR/BCMA (barcode medication administration)
 
 Demonstrates other improvements: e.g., password change functionality, RFID login, etc
+
+try:
+    path_to_images + imagefilename
+except:
+    try:
+        christian_path + imagefilename
+    except:
+        scott_path + imagefilename
