@@ -181,7 +181,7 @@ class TestClass3_pymongo_healthcare_MiniEMR(unittest.TestCase):
         def test_case_loinc(self):
                 loinc_collection = self.db.loinc
                 if loinc_collection.find_one({})==None:
-                        loincObjList=misc.LoadObjectFromJSONFile(PATH_TO_JSON_FILES+"/loincdb.json")
+                        loincObjList=misc.LoadObjectFromJSONFile(PATH_TO_JSON_FILES+"/Loinc_covid.json")
                         insert_result = loinc_collection.insert_many(loincObjList)
                         print('Loinc codes inserted: ',insert_result.inserted_ids)
 
