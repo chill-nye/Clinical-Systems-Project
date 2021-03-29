@@ -19,6 +19,10 @@ import modINFO74000.emr_const as EMR_CONSTS
 
 PATH_TO_JSON_FILES=EMR_CONSTS.PATH_TO_JSON_FILES
 PATH_TO_IMAGE_FILES=EMR_CONSTS.PATH_TO_IMAGE_FILES
+christian_path = 'C:/Users/Chill Nye/Documents/GitHub/Clinical-Systems-Project/jon_p1/images'
+christian_JSON_path = 'C:/Users/Chill Nye/Documents/GitHub/Clinical-Systems-Project/jon_p1/json_examples'
+scott_path = 'C:/Users/Chill Nye/Documents/GitHub/Clinical-Systems-Project/jon_p1/images'
+scott_JSON_path = 'C:/Users/Chill Nye/Documents/GitHub/Clinical-Systems-Project/jon_p1/json_examples'
 
 '''A very specific function that processes a file in PATH_TO_JSON_FILES/json_test1.txt with CD orders in a very specific way.'''
 def ParseCDOrderJSONString_GenerateJSON_AddNorahCD_CalculateTotalCost():
@@ -29,7 +33,11 @@ def ParseCDOrderJSONString_GenerateJSON_AddNorahCD_CalculateTotalCost():
         data=json.load(json_file)
         json_file.close()
     except (FileNotFoundError):
-        print("BOO! Error loading json file ")
+        try:
+            christian_path + imagefilename
+        except:
+            scott_path + imagefilename
+
     else:
         #success    
         #get a reference of the cd list object
