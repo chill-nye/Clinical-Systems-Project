@@ -23,3 +23,5 @@ Secure storage of passwords functionality for employees/providers
 Employee badge IEN barcode scanning (login/logout) functionality
 
 New functionality quality of development (working implementation and demo)
+
+Testing
