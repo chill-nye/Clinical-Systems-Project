@@ -15,7 +15,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
 '''
 
-NO_LOGON_TESTING=True #True disables login
+NO_LOGON_TESTING=False #True disables login
 
 MAIN_WIN_WIDTH=600
 MAIN_WIN_HEIGHT=500    
