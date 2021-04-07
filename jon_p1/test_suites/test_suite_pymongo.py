@@ -8,7 +8,7 @@ from import_help import modINFO74000
 import modINFO74000.misc_func as misc
 from modINFO74000.misc_func import PATH_TO_JSON_FILES
 from modINFO74000.misc_func import PATH_TO_IMAGE_FILES
-
+import modINFO74000.emr_crypto as crypto
 
 def setUpModule():
         print("----- PyMongo data representation unitest Suite begins")
@@ -253,8 +253,8 @@ class TestClass3_pymongo_healthcare_MiniEMR(unittest.TestCase):
                 #self.assertEqual(len(query_result),22,"There are 22 records that start with the name Paroxetine in the drug database")
 
         #GHOUSE_PHOTO_FILE_NAME='GHouse.png'
-        #BTEST_PHOTO_FILE_NAME='bob_test.png'
-        #Jon_PHOTO_FILE_NAME='ryuarchfiend.png'
+        BTEST_PHOTO_FILE_NAME='bob_test.png'
+        Jon_PHOTO_FILE_NAME='ryuarchfiend.png'
 
         #def test_case08_ghouse_upload_photo(self):
                 #fs = gridfs.GridFS(self.db)
@@ -267,16 +267,16 @@ class TestClass3_pymongo_healthcare_MiniEMR(unittest.TestCase):
                                 #img.close()           
                         #f.close()
 
-        #def test_case09_btest_upload_photo(self):
-                #fs = gridfs.GridFS(self.db)
-                #if fs.exists(filename=self.BTEST_PHOTO_FILE_NAME): 
-                        #print("Bob Test image file exists")
-                #else:
-                        #f=open(PATH_TO_IMAGE_FILES+"/"+self.BTEST_PHOTO_FILE_NAME,"br") 
-                        #with fs.new_file(filename=self.BTEST_PHOTO_FILE_NAME,tag="Test,Bob") as img: 
-                                #img.write(f)
-                                #img.close()           
-                        #f.close()
+        def test_case09_btest_upload_photo(self):
+                fs = gridfs.GridFS(self.db)
+                if fs.exists(filename=self.BTEST_PHOTO_FILE_NAME): 
+                        print("Bob Test image file exists")
+                else:
+                        f=open(PATH_TO_IMAGE_FILES+"/"+self.BTEST_PHOTO_FILE_NAME,"br") 
+                        with fs.new_file(filename=self.BTEST_PHOTO_FILE_NAME,tag="Test,Bob") as img: 
+                                img.write(f)
+                                img.close()           
+                        f.close()
 
         #def test_case10_ghouse_update_record_with_photo(self):
                 #'''update Dr. House record with the photo, and login credentials'''
@@ -300,57 +300,60 @@ class TestClass3_pymongo_healthcare_MiniEMR(unittest.TestCase):
                                         #{'$set':{'photo':img._id,'username':GHOUSE_USERNAME,'password':GHOUSE_PASSWORD}})
                         #img.close()
             
-        #def test_case11_bob_test_update_record_with_photo(self):
+        def test_case11_bob_test_update_record_with_photo(self):
                 #'''update Bob Test patient record with the photo'''
-                #BTEST_PATIENT_QUERY={'id': 12346} 
-                #fs = gridfs.GridFS(self.db)
-                #with fs.get_last_version(self.BTEST_PHOTO_FILE_NAME) as img:
-                        #print('Found image file with id: ',img._id)  
-                        #self.assertGreater(img.length,0,"Image file has zero length. Something is wrong.")
+                BTEST_PATIENT_QUERY={'id': 12345} 
+                fs = gridfs.GridFS(self.db)
+                with fs.get_last_version(self.BTEST_PHOTO_FILE_NAME) as img:
+                        print('Found image file with id: ',img._id)  
+                        self.assertGreater(img.length,0,"Image file has zero length. Something is wrong.")
                         #image is OK, now update his record
-                        #patient_collection = self.db.patients
-                        #btest_record_query_result=patient_collection.find_one(BTEST_PATIENT_QUERY)
-                        #if btest_record_query_result==None:
-                                #self.fail("Could not find Bob Test's record")                
-                        #else:                                 
-                                #print('Bob Test record found: ',btest_record_query_result)
+                        patient_collection = self.db.patients
+                        btest_record_query_result=patient_collection.find_one(BTEST_PATIENT_QUERY)
+                        if btest_record_query_result==None:
+                                self.fail("Could not find Bob Test's record")                
+                        else:                                 
+                                print('Bob Test record found: ',btest_record_query_result)
                                 #check if record has the photo field; if not, add it
-                                #patient_collection.update_one(
-                                        #{'_id':btest_record_query_result.get('_id')},
-                                        #{'$set':{'photo':img._id}})
-                        #img.close()
+                                patient_collection.update_one(
+                                        {'_id':btest_record_query_result.get('_id')},
+                                        {'$set':{'photo':img._id}})
+                        img.close()
                         
-        #def test_case12_jon_upload_photo(self):
-                #fs = gridfs.GridFS(self.db)
-                #if fs.exists(filename=self.Jon_PHOTO_FILE_NAME): 
-                        #print("Jon image file exists")
-                #else:
-                        #f=open(PATH_TO_IMAGE_FILES+"/"+self.Jon_PHOTO_FILE_NAME,"br") 
-                        #with fs.new_file(filename=self.Jon_PHOTO_FILE_NAME,tag="Bougram,Jon") as img: 
-                                #img.write(f)
-                                #img.close()           
-                        #f.close()
+        def test_case12_jon_upload_photo(self):
+                fs = gridfs.GridFS(self.db)
+                if fs.exists(filename=self.Jon_PHOTO_FILE_NAME): 
+                        print("Jon image file exists")
+                else:
+                        f=open(PATH_TO_IMAGE_FILES+"/"+self.Jon_PHOTO_FILE_NAME,"br") 
+                        with fs.new_file(filename=self.Jon_PHOTO_FILE_NAME,tag="Bougram,Jon") as img: 
+                                img.write(f)
+                                img.close()           
+                        f.close()
 
-        #def test_case13_jon_update_record_with_photo(self):
-                #'''update Jon record with the photo, and login credentials'''
-                #Jon_username='Zero'
-                #Jon_password='x'
-                #EMPLOYEE_QUERY={'full_name': {'$regex' : "^Bougram"}} #use regex for query
-                #fs = gridfs.GridFS(self.db)
-                #with fs.get_last_version(self.Jon_PHOTO_FILE_NAME) as img:
-                        #print('Found image file with id: ',img._id)  
-                        #self.assertGreater(img.length,0,"Image file has zero length. Something is wrong.")
+        def test_case13_jon_update_record_with_photo(self):
+                '''update Jon record with the photo, and login credentials'''
+                Jon_username='Zero'
+                Jon_password='abc123'
+                hashed_salted_password = crypto.hash_salt_password(Jon_password)
+                self.assertTrue(crypto.check_salt_password(hashed_salted_password,Jon_password),'Passwords does not match')
+                self.assertFalse(crypto.check_salt_password(hashed_salted_password,"x"),'Password match (they should not!)')
+                EMPLOYEE_QUERY={'full_name': {'$regex' : "^Bougram"}} #use regex for query
+                fs = gridfs.GridFS(self.db)
+                with fs.get_last_version(self.Jon_PHOTO_FILE_NAME) as img:
+                        print('Found image file with id: ',img._id)  
+                        self.assertGreater(img.length,0,"Image file has zero length. Something is wrong.")
                         #image is OK, now update his record
-                        #employee_collection = self.db.employees
-                        #ghouse_record_query_result=employee_collection.find_one(EMPLOYEE_QUERY)
-                        #if ghouse_record_query_result==None:
-                                #self.fail("Could not find Jon's record")                
-                        #else:                                 
-                                #print('Jon record found: ',ghouse_record_query_result)
+                        employee_collection = self.db.employees
+                        ghouse_record_query_result=employee_collection.find_one(EMPLOYEE_QUERY)
+                        if ghouse_record_query_result==None:
+                                self.fail("Could not find Jon's record")                
+                        else:                                 
+                                print('Jon record found: ',ghouse_record_query_result)
                                 #check if record has the photo field; if not, add it
-                                #employee_collection.update_one(
-                                        #{'_id':ghouse_record_query_result.get('_id')},
-                                        #{'$set':{'photo':img._id}})
-                        #img.close()
+                                employee_collection.update_one(
+                                        {'_id':ghouse_record_query_result.get('_id')},
+                                        {'$set':{'photo':img._id, 'username':Jon_username,'password':hashed_salted_password}})
+                        img.close()
 
 if __name__ == '__main__': unittest.main()
