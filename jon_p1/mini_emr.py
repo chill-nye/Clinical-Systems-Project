@@ -35,7 +35,7 @@ from tk_html_widgets import HTMLLabel
 
 import matplotlib
 matplotlib.use("TkAgg")
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.figure import Figure
 
 DB_DATE_TIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
