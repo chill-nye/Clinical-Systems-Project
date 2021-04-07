@@ -21,6 +21,7 @@ from tkinter import messagebox
 from modINFO74000.emr_db import MiniEMRMongo
 from modINFO74000.emr_misc_ui import *
 from modINFO74000.emr_const import *
+from modINFO74000.emr_crypto import *
 
 christian_path = 'C:/Users/Chill Nye/Documents/GitHub/Clinical-Systems-Project/jon_p1/images'
 christian_JSON_path = 'C:/Users/Chill Nye/Documents/GitHub/Clinical-Systems-Project/jon_p1/json_examples'
@@ -43,7 +44,7 @@ class CurrentProvider():
             EMPLOYEE_QUERY={'username':user}
             employee_collection = MiniEMRMongo.db.employees
             cls.Record=employee_collection.find_one(EMPLOYEE_QUERY)            
-            if cls.Record!=None and cls.Record["password"]==passw: return True
+            if cls.Record!=None and check_salt_password(cls.Record["password"],passw): return True
             else: return False
 
     @classmethod
