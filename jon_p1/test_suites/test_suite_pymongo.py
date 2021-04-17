@@ -185,12 +185,12 @@ class TestClass3_pymongo_healthcare_MiniEMR(unittest.TestCase):
                         insert_result = loinc_collection.insert_many(loincObjList)
                         print('Loinc codes inserted: ',insert_result.inserted_ids)
 
-        #def test_case_icd(self):
-                #loinc_collection = self.db.icd10
-                #if loinc_collection.find_one({})==None:
-                        #loincObjList=misc.LoadObjectFromJSONFile(PATH_TO_JSON_FILES+"/icd10.json")
-                        #insert_result = loinc_collection.insert_many(loincObjList)
-                        #print('Loinc codes inserted: ',insert_result.inserted_ids)
+        def test_case_icd(self):
+                icd_collection = self.db.icd10
+                if icd_collection.find_one({})==None:
+                        icdObjList=misc.LoadObjectFromJSONFile(PATH_TO_JSON_FILES+"/icd10.json")
+                        insert_result = icd_collection.insert_many(icdObjList)
+                        print('ICD codes inserted: ',insert_result.inserted_ids)
 
         #def test_case02_patients(self):
                 #patient_collection = self.db.patients
