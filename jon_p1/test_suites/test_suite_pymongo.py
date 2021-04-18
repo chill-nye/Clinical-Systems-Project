@@ -10,8 +10,8 @@ from modINFO74000.misc_func import CH_PATH_TO_JSON_FILES
 from modINFO74000.misc_func import CH_PATH_TO_IMAGE_FILES
 import modINFO74000.emr_crypto as crypto
 
-PATH_TO_JSON_FILES = 'C:/Users/Chill Nye/Documents/GitHub/Clinical-Systems-Project/jon_p1/json_examples'
-PATH_TO_IMAGE_FILES = 'C:/Users/Chill Nye/Documents/GitHub/Clinical-Systems-Project/jon_p1/images'
+PATH_TO_IMAGE_FILES='C:/Users/jboug/Desktop/Fourth Year/Fourth Year, First Semester/Clinical Systems 2/project_code/Clinical-Systems-Project/jon_p1/images'
+PATH_TO_JSON_FILES='C:/Users/jboug/Desktop/Fourth Year/Fourth Year, First Semester/Clinical Systems 2//project_code/Clinical-Systems-Project/jon_p1/json_examples'
 
 def setUpModule():
         print("----- PyMongo data representation unitest Suite begins")
