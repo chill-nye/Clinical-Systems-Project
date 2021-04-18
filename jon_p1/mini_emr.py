@@ -80,6 +80,7 @@ class MainWindowFrame(tk.Frame):
             patientSummary += "<li>No cell number listed</li>"
         patientSummary += "</ul>"
 
+        #allergies
         patientSummary += "<b><u>Allergies</u></b>:<ul>"
         if len(patient['allergies']) > 0:
             for i in patient['allergies']:
@@ -88,20 +89,32 @@ class MainWindowFrame(tk.Frame):
             patientSummary += '<li>No known allergies</li>'
         patientSummary += "</ul>"
 
+        #medications + populate Meds tab
         patientSummary += '<b><u>Medications</u></b>:<ul>'
         self.medsListbox.delete(0,self.medsListbox.size()-1)
         if len(patient['orders']['medications']) > 0:
-            for i in patient['orders']['medications']:
-                self.medsListbox.insert('end', i["drug"]+', '+i["DIN"]) 
-                patientSummary += '<li>{}</li>'.format(i['drug'])
+            for med in patient['orders']['medications']:
+                query_result=MiniEMRMongo.db.drug_formulary.find_one({'DIN': med['DIN']})
+                self.medsListbox.insert('end', query_result["DIN"]+': '+query_result["TRADENAME"].replace("    ","") + ", Dose: "+ med["Freq"]) 
+                patientSummary += '<li>{}</li>'.format(query_result['TRADENAME'].replace("    ",""))
         else:
             orders_meds = '<li>No current medications found</li>'
         patientSummary += "</ul>"
 
+        #lab tests + populate Orders tab
+        patientSummary += '<b><u>Lab Tests</u></b>:<ul>'
         self.ordersListbox.delete(0,self.ordersListbox.size()-1)
-        for test in patient["orders"]["tests"]:
-            self.ordersListbox.insert('end', test["longName"]+', '+test["loinc"])
+        if len(patient['orders']['tests']) > 0:
+            for test in patient["orders"]["tests"]:
+                query_result=MiniEMRMongo.db.loinc.find_one({'LOINC_NUM': test['LOINC_NUM']})
+                query_result_doc=MiniEMRMongo.db.employees.find_one({'IEN': test['ProviderIEN']})
+                self.ordersListbox.insert('end', query_result["Shortname"]+', '+query_result["LOINC_NUM"]+', by '+query_result_doc['full_name']+', on '+ test["result"]["Time"])
+                patientSummary += '<li>{}</li>'.format(query_result['Shortname'])
+        else:
+            orders_labs = '<li>No current labs found</li>'
+        patientSummary += "</ul>"
 
+        #problems + populate Problems tab
         patientSummary+="<br/><b><u>Problems</u></b>:<ul>"
         self.problemsListbox.delete(0,self.problemsListbox.size()-1)
         if"problems" in patient:
@@ -113,6 +126,19 @@ class MainWindowFrame(tk.Frame):
                     self.problemsListbox.insert('end',query_result["desc"])                    
                     patientSummary+="<li>"+query_result["desc"]+"</li>"        
 
+        #administration + popoulate Report tab
+        patientSummary += '<br/><b><u>Administration Events</u></b>:<ul>'
+        self.adminListbox.delete(0,self.adminListbox.size()-1)
+        if len(patient['orders']['administration']) > 0:
+            for i in patient['orders']['administration']:
+                query_result_med=MiniEMRMongo.db.drug_formulary.find_one({'DIN': i['DIN']})
+                query_result_doc=MiniEMRMongo.db.employees.find_one({'IEN': i['ProviderIEN']})
+                self.adminListbox.insert('end', query_result_med["TRADENAME"].replace("     ","")+', by '+query_result_doc["full_name"]+', on '+i["Time"]) 
+                patientSummary += '<li>{}</li>'.format(query_result_med["TRADENAME"])
+        else:
+            orders_meds = '<li>No current medications found</li>'
+        patientSummary += "</ul>"
+
         self.html_lable.set_html(patientSummary)
 
         self.patientNameLabel.configure(text='Patient ID: '+str(patient['id'])+'\nName: '+patient['name']+'\nGender: '+patient['gender']+'\nDOB: '+dob.strftime("%Y-%m-%d")+' ('+str(age_years)+' years old)')
@@ -123,9 +149,9 @@ class MainWindowFrame(tk.Frame):
             setLabelImage(self.patientPhotoLabel,patient["photo"])
         else: setLabelImage(self.patientPhotoLabel,None)
         #list meds
-        self.medsListbox.delete(0,self.medsListbox.size()-1)
-        for med in patient["orders"]["medications"]:
-            self.medsListbox.insert('end', med["drug"]+', '+med["DIN"])
+        # self.medsListbox.delete(0,self.medsListbox.size()-1)
+        # for med in patient["orders"]["medications"]:
+        #     self.medsListbox.insert('end', med["TRADENAME"]+', '+med["DIN"])
 
         f = Figure(figsize=(5,5), dpi=100)
         a = f.add_subplot(111)
@@ -141,17 +167,18 @@ class MainWindowFrame(tk.Frame):
         canvas.get_tk_widget().pack(expand=True)
         canvas.draw()
 
-        reports = ""
+        # reports = ""
 
-        reports += "<b><u>Administration Events</u></b>:<ul>"
-        if len(patient['orders']['administration']) > 0:
-            for i in patient['orders']['administration']:
-                reports += '<li>Drug: {}, by {}, on {}</li>'.format(i['drug'], i['ProviderIEN'], i['Time'])
-        else:
-            orders_meds = '<li>No administration events found</li>'
-        reports += "</ul>"
+        # reports += "<b><u>Administration Events</u></b>:<ul>"
+        # if len(patient['orders']['administration']) > 0:
+        #     for i in patient['orders']['administration']:
+        #         query_result=MiniEMRMongo.db.drug_formulary.find_one({'DIN': i['DIN']})
+        #         reports += '<li>Drug: {}, by {}, on {}</li>'.format(query_result['TRADENAME'], i['ProviderIEN'], i['Time'])
+        # else:
+        #     orders_meds = '<li>No administration events found</li>'
+        # reports += "</ul>"
 
-        self.reportsHTML.set_html(reports)
+        # self.reportsHTML.set_html(reports)
 
 
     def clearPatientUI(self):
@@ -220,9 +247,14 @@ class MainWindowFrame(tk.Frame):
 
         tab6 = ttk.Frame(tabControl)
         tabControl.add(tab6, text='Reports')
-        self.reportsHTML = HTMLLabel(tab6)
-        self.reportsHTML.pack(fill="both", expand=True)
-        self.reportsHTML.fit_height()
+        self.adminListbox = Listbox(tab6)
+        self.adminListbox.pack(fill="both", expand=True)
+
+        # tab6 = ttk.Frame(tabControl)
+        # tabControl.add(tab6, text='Reports')
+        # self.reportsHTML = HTMLLabel(tab6)
+        # self.reportsHTML.pack(fill="both", expand=True)
+        # self.reportsHTML.fit_height()
 
         tabControl.pack(expand=1, fill="both")
 
@@ -302,15 +334,39 @@ class MainWindow(tk.Tk):
             
         def onIENBarcodeRead(IEN):
             print("employee IEN scanned:",IEN)
-            CurrentProvider.selectProviderByIEN(IEN)
-            responsible_provider = CurrentProvider.provider_details
-            print(responsible_provider)
+            if CurrentProvider.Record['IEN']!=IEN:
+                logoutUser()
+            
+            providerRecord = getEmployeeRecordByIEN(IEN)
+            if providerRecord!=None:
+
+                provider_username = providerRecord['username']
+                print(provider_username)
+                #We need to do code that will target the username box and insert the scanned IENs username
+                self.login_win.loginUIFrame.UserNameTextBox.insert("end",provider_username)
+                self.login_win.loginUIFrame.PasswordTextBox.focus()
 
         def onDINBarcodeRead(DIN):
             print("drug DIN scanned:",DIN)
-            DrugList.selectDrugByDIN(DIN)
-            drug_ordered = DrugList.drug_details
-            print(drug_ordered)
+            MedList.findDrugbyDIN(DIN)
+            record_query_result = MiniEMRMongo.db.drug_formulary.find_one({'DIN': (DIN)})
+            if record_query_result == None:
+                messagebox.showinfo('ERROR',' The scanned medication is not in the system\nDO NOT ADMINISTER')
+
+            else:
+                print("drug scanned; DIN:", MedList.current()["DIN"] , ' TRADENAME: ' , MedList.current()["TRADENAME"])
+                if "medications" in PatientList.current()["orders"]:
+                    is_in_list = False
+                    for med in PatientList.current()["orders"]["medications"]:
+                        if med["DIN"] == DIN:
+                            messagebox.showinfo('Alert', ' This Medication is in the patient\'s current medication list')
+                            is_in_list = True
+                            # add administration recording with date + time and IEN
+                            break
+                        else:
+                            continue
+                    if is_in_list == False:
+                        messagebox.showinfo('Critical Alert',' The scanned medication is not prescribed to the current patient\nDO NOT ADMINISTER')
         
         self.bScanner=BarcodeScanner(self,onMRNBarcodeRead,onIENBarcodeRead,onDINBarcodeRead)
     

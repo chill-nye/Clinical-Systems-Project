@@ -17,9 +17,25 @@
                 "cell":"617-555-1761"},
         "allergies":[],
         "orders":{
-            "medications":[],
-            "tests":[]      
+            "medications":[
+                {"DIN": "00356476","Freq": "TTTT QD"},
+                {"DIN": "00620548", "Freq": "TT BID"},
+                {"DIN": "02150328", "Freq": "T QD"}
+            ],
+            "tests":[
+                {"LOINC_NUM": "95406-5","ProviderIEN": "45", "patientMRN":"12345", "result":{"value":"positive","Time":"09-11-2013 6:04"}}
+            ],
+            "administration":[
+                {"DIN":"00356476", "ProviderIEN":"65", "patientMRN":"12345", "Time":"09-12-2013 6:04"},
+                {"DIN":"00620548", "ProviderIEN":"65", "patientMRN":"12345", "Time":"09-13-2013 6:04"},
+                {"DIN":"00356476", "ProviderIEN":"65", "patientMRN":"12345", "Time":"09-12-2013 12:04"},
+                {"DIN":"00620548", "ProviderIEN":"65", "patientMRN":"12345", "Time":"09-13-2013 12:04"},
+                {"DIN":"02150328", "ProviderIEN":"65", "patientMRN":"12345", "Time":"09-13-2013 12:04"},
+                {"DIN":"00356476", "ProviderIEN":"63", "patientMRN":"12345", "Time":"09-12-2013 18:04"},
+                {"DIN":"00356476", "ProviderIEN":"63", "patientMRN":"12345", "Time":"09-13-2013 00:04"}
+            ]  
         },
+        "problems":[{"ICD10code":"J1281"}],
         "vitals":[]
     },
     {   "id":12345,
@@ -41,13 +57,16 @@
         "allergies":[],                
         "orders":{
             "medications":[
-                {"drug":"PENICILLIN G SODIUM USP INJ 5000000UNIT/VIAL","DIN":"00883751"}],
-            "tests":[{"loinc":"24356-8", "longName":"Urinalysis complete panel - Urine", "ProviderIEN":"45", "patientMRN":"12345", "Time":"9-13-2013 21:37"}],
+                {"DIN":"00883751", "Freq": "TT BID"}],
+            "tests":[
+                {"LOINC_NUM":"95411-5","ProviderIEN":"45","patientMRN":"12345", "result":{"value":"1st dose","Time":"09-11-2013 6:04"}},
+                {"LOINC_NUM":"95411-5","ProviderIEN":"45","patientMRN":"12345", "result":{"value":"2nd dose","Time":"09-11-2013 6:04"}}
+            ],
             "administration":[
-                {"drug":"PENICILLIN G SODIUM USP INJ 5000000UNIT/VIAL", "DIN":"00883751", "ProviderIEN":"63", "patientMRN":"12345", "Time":"09-12-2013 14:04"},
-                {"drug":"PENICILLIN G SODIUM USP INJ 5000000UNIT/VIAL", "DIN":"00883751", "ProviderIEN":"65", "patientMRN":"12345", "Time":"09-13-2013 14:04"}]          
+                {"DIN":"00883751", "ProviderIEN":"63", "patientMRN":"12345", "Time":"09-12-2013 14:04"},
+                {"DIN":"00883751", "ProviderIEN":"65", "patientMRN":"12345", "Time":"09-13-2013 14:04"}]          
         },
-        "problems":[{"ICD10code":"A281","description":"Cat-scratch disease"}],
+        "problems":[{"ICD10code":"A281"}],
         "vitals":[
             {"ien":"018","type":"T","value":"80","dt":"3130912.100421","dtf":"09-12-2013 10:04"},
             {"ien":"018","type":"P","value":"40","dt":"3130912.100421","dtf":"09-12-2013 10:04"},
@@ -81,13 +100,17 @@
         "allergies":["penicillin"],
         "orders":{
             "medications":[
-                {"drug":"CODEINE PHOSPHATE LIQ INJ USP 30MG/ML","DIN":"00544884"}],
-            "tests":[{"loinc":"24338-6", "longName":"Gas panel - Blood", "ProviderIEN":"65", "patientMRN":"13", "Time":"9-27-2013 11:37"}],
+                {"DIN":"00544884", "Freq": "TT BID"}],
+            "tests":[
+                {"LOINC_NUM":"95411-5","ProviderIEN":"45","patientMRN":"12345", "result":{"value":"1st dose","Time":"09-11-2013 6:04"}},
+                {"LOINC_NUM":"95411-5","ProviderIEN":"45","patientMRN":"12345", "result":{"value":"2nd dose","Time":"09-11-2013 6:04"}}
+            ],
             "administration":[
-                {"drug":"CODEINE PHOSPHATE LIQ INJ USP 30MG/ML", "DIN":"00544884", "ProviderIEN":"018", "patientMRN":"13", "Time":"09-12-2013 10:04"}
+                {"DIN":"00544884", "ProviderIEN":"018", "patientMRN":"13", "Time":"09-12-2013 10:04"}
             ]      
         },
-        "problems":[{"ICD10code":"A200","description":"Bubonic Plague"}],
+        "problems":[{"ICD10code":"A200"}],
+        
         "vitals":[]
     }, 
     {   "id":15,
@@ -108,9 +131,21 @@
                 "cell":"517-555-1565"},
         "allergies":["peanuts","latex"],
         "orders":{
-            "medications":[],
-            "tests":[]    
+            "medications":[
+                {"DIN": "00356476","Freq": "TT BID"},
+                {"DIN": "00620548", "Freq": "TT BID"}
+            ],
+            "tests":[
+                {"LOINC_NUM": "95209-3","ProviderIEN": "45", "patientMRN":15, "result":{"value":"positive","Time":"09-11-2013 6:04"}}
+            ],
+            "administration":[
+                {"DIN":"00356476", "ProviderIEN":"65", "patientMRN":"12345", "Time":"09-12-2013 6:14"},
+                {"DIN":"00620548", "ProviderIEN":"65", "patientMRN":"12345", "Time":"09-13-2013 6:14"},
+                {"DIN":"00356476", "ProviderIEN":"65", "patientMRN":"12345", "Time":"09-12-2013 12:14"},
+                {"DIN":"00620548", "ProviderIEN":"65", "patientMRN":"12345", "Time":"09-13-2013 12:14"}
+            ]   
         },
+        "problems":[{"ICD10code":"B342"}],
         "vitals":[]
     }
 ]
