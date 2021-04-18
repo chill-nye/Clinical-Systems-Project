@@ -25,8 +25,8 @@ import gridfs
 
 christian_path = 'C:/Users/Chill Nye/Documents/GitHub/Clinical-Systems-Project/jon_p1/images'
 christian_JSON_path = 'C:/Users/Chill Nye/Documents/GitHub/Clinical-Systems-Project/jon_p1/json_examples'
-scott_path = 'C:/Users/Chill Nye/Documents/GitHub/Clinical-Systems-Project/jon_p1/images'
-scott_JSON_path = 'C:/Users/Chill Nye/Documents/GitHub/Clinical-Systems-Project/jon_p1/json_examples'
+scott_path = 'C:/Users/srt74/Dev/Clinical-Systems-Project/jon_p1/images'
+scott_JSON_path = 'C:/Users/srt74/Dev/Clinical-Systems-Project/jon_p1/json_examples'
 
 class TopDialogWindow(tk.Toplevel):
 

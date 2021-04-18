@@ -302,6 +302,7 @@ class MainWindow(tk.Tk):
         menuBar.add_cascade(label="View", menu=viewMenu)    
         #patient select menu
         viewMenu.add_command(label="Select patient", command=selectPatient)
+        viewMenu.add_command(label="Add new patient", command=selectPatient)
 
         toolsMenu = Menu(menuBar, tearoff=0)
         menuBar.add_cascade(label="Tools", menu=toolsMenu)    
