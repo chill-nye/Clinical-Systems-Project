@@ -6,12 +6,15 @@ from random import randint
 import gridfs
 from import_help import modINFO74000
 import modINFO74000.misc_func as misc
-from modINFO74000.misc_func import PATH_TO_JSON_FILES
-from modINFO74000.misc_func import PATH_TO_IMAGE_FILES
+import modINFO74000.emr_const as EMR_CONSTS
 import modINFO74000.emr_crypto as crypto
 
-PATH_TO_IMAGE_FILES='C:/Users/jboug/Desktop/Fourth Year/Fourth Year, First Semester/Clinical Systems 2/project_code/Clinical-Systems-Project/jon_p1/images'
-PATH_TO_JSON_FILES='C:/Users/jboug/Desktop/Fourth Year/Fourth Year, First Semester/Clinical Systems 2//project_code/Clinical-Systems-Project/jon_p1/json_examples'
+PATH_TO_JSON_FILES=EMR_CONSTS.PATH_TO_JSON_FILES
+PATH_TO_IMAGE_FILES=EMR_CONSTS.PATH_TO_IMAGE_FILES
+CH_PATH_TO_JSON_FILES=EMR_CONSTS.CH_PATH_TO_IMAGE_FILES
+CH_PATH_TO_IMAGE_FILES=EMR_CONSTS.CH_PATH_TO_IMAGE_FILES
+ST_PATH_TO_JSON_FILES=EMR_CONSTS.ST_PATH_TO_JSON_FILES
+ST_PATH_TO_IMAGE_FILES=EMR_CONSTS.ST_PATH_TO_IMAGE_FILES
 
 def setUpModule():
         print("----- PyMongo data representation unitest Suite begins")
@@ -184,38 +187,88 @@ class TestClass3_pymongo_healthcare_MiniEMR(unittest.TestCase):
         def test_case_loinc(self):
                 loinc_collection = self.db.loinc
                 if loinc_collection.find_one({})==None:
-                        loincObjList=misc.LoadObjectFromJSONFile(PATH_TO_JSON_FILES+"/Loinc_covid.json")
-                        insert_result = loinc_collection.insert_many(loincObjList)
-                        print('Loinc codes inserted: ',insert_result.inserted_ids)
+                        try:
+                                loincObjList=misc.LoadObjectFromJSONFile(PATH_TO_JSON_FILES+"/Loinc_covid.json")
+                                insert_result = loinc_collection.insert_many(loincObjList)
+                                print('Loinc codes inserted: ',insert_result.inserted_ids)
+                        except (FileNotFoundError):
+                                try:
+                                        loincObjList=misc.LoadObjectFromJSONFile(CH_PATH_TO_JSON_FILES+"/Loinc_covid.json")
+                                        insert_result = loinc_collection.insert_many(loincObjList)
+                                        print('Loinc codes inserted: ',insert_result.inserted_ids)
+                                except:
+                                        loincObjList=misc.LoadObjectFromJSONFile(ST_PATH_TO_JSON_FILES+"/Loinc_covid.json")
+                                        insert_result = loinc_collection.insert_many(loincObjList)
+                                        print('Loinc codes inserted: ',insert_result.inserted_ids)
 
         def test_case_icd(self):
                 icd_collection = self.db.icd10
                 if icd_collection.find_one({})==None:
-                        icdObjList=misc.LoadObjectFromJSONFile(PATH_TO_JSON_FILES+"/icd10.json")
-                        insert_result = icd_collection.insert_many(icdObjList)
-                        print('ICD codes inserted: ',insert_result.inserted_ids)
+                        try:
+                                icdObjList=misc.LoadObjectFromJSONFile(PATH_TO_JSON_FILES+"/icd10.json")
+                                insert_result = icd_collection.insert_many(icdObjList)
+                                print('ICD codes inserted: ',insert_result.inserted_ids)
+                        except (FileNotFoundError):
+                                try:
+                                        loincObjList=misc.LoadObjectFromJSONFile(CH_PATH_TO_JSON_FILES+"/icd10.json")
+                                        insert_result = loinc_collection.insert_many(loincObjList)
+                                        print('Loinc codes inserted: ',insert_result.inserted_ids)
+                                except:
+                                        loincObjList=misc.LoadObjectFromJSONFile(ST_PATH_TO_JSON_FILES+"/icd10.json")
+                                        insert_result = loinc_collection.insert_many(loincObjList)
+                                        print('Loinc codes inserted: ',insert_result.inserted_ids)
 
         def test_case02_patients(self):
                 patient_collection = self.db.patients
                 if patient_collection.find_one({})==None:
-                        patientListObj=misc.LoadObjectFromJSONFile(PATH_TO_JSON_FILES+"/patients.json")
-                        insert_result = patient_collection.insert_many(patientListObj)
-                        print('Patient records inserted: ',insert_result.inserted_ids)
+                        try:
+                                patientListObj=misc.LoadObjectFromJSONFile(PATH_TO_JSON_FILES+"/patients.json")
+                                insert_result = patient_collection.insert_many(patientListObj)
+                                print('Patient records inserted: ',insert_result.inserted_ids)
+                        except (FileNotFoundError):
+                                try:
+                                        loincObjList=misc.LoadObjectFromJSONFile(CH_PATH_TO_JSON_FILES+"/patients.json")
+                                        insert_result = loinc_collection.insert_many(loincObjList)
+                                        print('Loinc codes inserted: ',insert_result.inserted_ids)
+                                except:
+                                        loincObjList=misc.LoadObjectFromJSONFile(ST_PATH_TO_JSON_FILES+"/patients.json")
+                                        insert_result = loinc_collection.insert_many(loincObjList)
+                                        print('Loinc codes inserted: ',insert_result.inserted_ids)
         
         def test_case02_admin(self):
                 patient_collection = self.db.D_administration
                 if patient_collection.find_one({})==None:
-                        patientListObj=misc.LoadObjectFromJSONFile(PATH_TO_JSON_FILES+"/administration.json")
-                        insert_result = patient_collection.insert_many(patientListObj)
-                        print('Patient records inserted: ',insert_result.inserted_ids)
+                        try:
+                                patientListObj=misc.LoadObjectFromJSONFile(PATH_TO_JSON_FILES+"/administration.json")
+                                insert_result = patient_collection.insert_many(patientListObj)
+                                print('Patient records inserted: ',insert_result.inserted_ids)
+                        except (FileNotFoundError):
+                                try:
+                                        loincObjList=misc.LoadObjectFromJSONFile(CH_PATH_TO_JSON_FILES+"/administration.json")
+                                        insert_result = loinc_collection.insert_many(loincObjList)
+                                        print('Loinc codes inserted: ',insert_result.inserted_ids)
+                                except:
+                                        loincObjList=misc.LoadObjectFromJSONFile(ST_PATH_TO_JSON_FILES+"/administration.json")
+                                        insert_result = loinc_collection.insert_many(loincObjList)
+                                        print('Loinc codes inserted: ',insert_result.inserted_ids)
 
         def test_case03_employees(self):
                 employee_collection = self.db.employees
                 if employee_collection.find_one({})==None:
-                        employeeListObj=misc.LoadObjectFromJSONFile(PATH_TO_JSON_FILES+"/empl.json")
-                        insert_result = employee_collection.insert_many(employeeListObj)
-                        print('Employee records inserted: ',insert_result.inserted_ids)
-                                
+                        try:
+                                employeeListObj=misc.LoadObjectFromJSONFile(PATH_TO_JSON_FILES+"/empl.json")
+                                insert_result = employee_collection.insert_many(employeeListObj)
+                                print('Employee records inserted: ',insert_result.inserted_ids)
+                        except (FileNotFoundError):
+                                try:
+                                        loincObjList=misc.LoadObjectFromJSONFile(CH_PATH_TO_JSON_FILES+"/empl.json")
+                                        insert_result = loinc_collection.insert_many(loincObjList)
+                                        print('Loinc codes inserted: ',insert_result.inserted_ids)
+                                except:
+                                        loincObjList=misc.LoadObjectFromJSONFile(ST_PATH_TO_JSON_FILES+"/empl.json")
+                                        insert_result = loinc_collection.insert_many(loincObjList)
+                                        print('Loinc codes inserted: ',insert_result.inserted_ids)
+
         def test_case04_employee_search(self):
                 EMPLOYEE_QUERY={'full_name': {'$regex' : "^WILSON"}} #use regex for query
                 employee_collection = self.db.employees
@@ -244,10 +297,19 @@ class TestClass3_pymongo_healthcare_MiniEMR(unittest.TestCase):
         def test_case06_drug_formulary(self):
                 formulary_collection = self.db.drug_formulary
                 if formulary_collection.find_one({})==None:
-                        drugDataObj=misc.LoadObjectFromJSONFile(PATH_TO_JSON_FILES+"/drug_data.json")
-                        insert_result = formulary_collection.insert_many(drugDataObj["DrugReport"])
-                        print('Drug records inserted: ',insert_result.inserted_ids)
-                                        
+                        try:
+                                drugDataObj=misc.LoadObjectFromJSONFile(PATH_TO_JSON_FILES+"/drug_data.json")
+                                insert_result = formulary_collection.insert_many(drugDataObj["DrugReport"])
+                                print('Drug records inserted: ',insert_result.inserted_ids)
+                        except (FileNotFoundError):
+                                try:
+                                        loincObjList=misc.LoadObjectFromJSONFile(CH_PATH_TO_JSON_FILES+"/drug_data.json")
+                                        insert_result = loinc_collection.insert_many(loincObjList)
+                                        print('Loinc codes inserted: ',insert_result.inserted_ids)
+                                except:
+                                        loincObjList=misc.LoadObjectFromJSONFile(ST_PATH_TO_JSON_FILES+"/drug_data.json")
+                                        insert_result = loinc_collection.insert_many(loincObjList)
+                                        print('Loinc codes inserted: ',insert_result.inserted_ids)                                        
 
         def test_case07_drug_search(self):
                 DRUG_QUERY={'TRADENAME': {'$regex' : "^PAROXETINE"}} #use regex for query
@@ -266,27 +328,58 @@ class TestClass3_pymongo_healthcare_MiniEMR(unittest.TestCase):
                 if fs.exists(filename=self.GHOUSE_PHOTO_FILE_NAME): 
                         print("Ghouse image file exists")
                 else:
-                        f=open(PATH_TO_IMAGE_FILES+"/"+self.GHOUSE_PHOTO_FILE_NAME,"br") 
-                        with fs.new_file(filename=self.GHOUSE_PHOTO_FILE_NAME,tag="INFO74000") as img: 
-                                img.write(f)
-                                img.close()           
-                        f.close()
+                        try:
+                                f=open(PATH_TO_IMAGE_FILES+"/"+self.GHOUSE_PHOTO_FILE_NAME,"br") 
+                                with fs.new_file(filename=self.GHOUSE_PHOTO_FILE_NAME,tag="INFO74000") as img: 
+                                        img.write(f)
+                                        img.close()           
+                                f.close()
+                        except:
+                                try:
+                                        f=open(CH_PATH_TO_IMAGE_FILES+"/"+self.GHOUSE_PHOTO_FILE_NAME,"br") 
+                                        with fs.new_file(filename=self.GHOUSE_PHOTO_FILE_NAME,tag="INFO74000") as img: 
+                                                img.write(f)
+                                                img.close()           
+                                        f.close()
+                                except:
+                                        f=open(ST_PATH_TO_IMAGE_FILES+"/"+self.GHOUSE_PHOTO_FILE_NAME,"br") 
+                                        with fs.new_file(filename=self.GHOUSE_PHOTO_FILE_NAME,tag="INFO74000") as img: 
+                                                img.write(f)
+                                                img.close()           
+                                        f.close()
 
         def test_case09_btest_upload_photo(self):
                 fs = gridfs.GridFS(self.db)
                 if fs.exists(filename=self.BTEST_PHOTO_FILE_NAME): 
                         print("Bob Test image file exists")
                 else:
-                        f=open(PATH_TO_IMAGE_FILES+"/"+self.BTEST_PHOTO_FILE_NAME,"br") 
-                        with fs.new_file(filename=self.BTEST_PHOTO_FILE_NAME,tag="Test,Bob") as img: 
-                                img.write(f)
-                                img.close()           
-                        f.close()
+                        try:
+                                f=open(PATH_TO_IMAGE_FILES+"/"+self.BTEST_PHOTO_FILE_NAME,"br") 
+                                with fs.new_file(filename=self.BTEST_PHOTO_FILE_NAME,tag="Test,Bob") as img: 
+                                        img.write(f)
+                                        img.close()           
+                                f.close()
+                        except:
+                                try:
+                                        f=open(CH_PATH_TO_IMAGE_FILES+"/"+self.BTEST_PHOTO_FILE_NAME,"br") 
+                                        with fs.new_file(filename=self.BTEST_PHOTO_FILE_NAME,tag="Test,Bob") as img: 
+                                                img.write(f)
+                                                img.close()           
+                                        f.close()
+                                except:
+                                        f=open(ST_PATH_TO_IMAGE_FILES+"/"+self.BTEST_PHOTO_FILE_NAME,"br") 
+                                        with fs.new_file(filename=self.BTEST_PHOTO_FILE_NAME,tag="Test,Bob") as img: 
+                                                img.write(f)
+                                                img.close()           
+                                        f.close()                                
 
         def test_case10_ghouse_update_record_with_photo(self):
                 '''update Dr. House record with the photo, and login credentials'''
                 GHOUSE_USERNAME='ghouse'
                 GHOUSE_PASSWORD='abc123'
+                hashed_salted_password = crypto.hash_salt_password(GHOUSE_PASSWORD)
+                self.assertTrue(crypto.check_salt_password(hashed_salted_password,GHOUSE_PASSWORD),'Passwords does not match')
+                self.assertFalse(crypto.check_salt_password(hashed_salted_password,"x"),'Password match (they should not!)')
                 EMPLOYEE_QUERY={'full_name': {'$regex' : "^HOUSE"}} #use regex for query
                 fs = gridfs.GridFS(self.db)
                 with fs.get_last_version(self.GHOUSE_PHOTO_FILE_NAME) as img:
@@ -302,7 +395,7 @@ class TestClass3_pymongo_healthcare_MiniEMR(unittest.TestCase):
                                 #check if record has the photo field; if not, add it
                                 employee_collection.update_one(
                                         {'_id':ghouse_record_query_result.get('_id')},
-                                        {'$set':{'photo':img._id,'username':GHOUSE_USERNAME,'password':GHOUSE_PASSWORD}})
+                                        {'$set':{'photo':img._id,'username':GHOUSE_USERNAME,'password':hashed_salted_password}})
                         img.close()
             
         def test_case11_bob_test_update_record_with_photo(self):
@@ -330,11 +423,25 @@ class TestClass3_pymongo_healthcare_MiniEMR(unittest.TestCase):
                 if fs.exists(filename=self.Jon_PHOTO_FILE_NAME): 
                         print("Jon image file exists")
                 else:
-                        f=open(PATH_TO_IMAGE_FILES+"/"+self.Jon_PHOTO_FILE_NAME,"br") 
-                        with fs.new_file(filename=self.Jon_PHOTO_FILE_NAME,tag="Bougram,Jon") as img: 
-                                img.write(f)
-                                img.close()           
-                        f.close()
+                        try:
+                                f=open(PATH_TO_IMAGE_FILES+"/"+self.Jon_PHOTO_FILE_NAME,"br") 
+                                with fs.new_file(filename=self.Jon_PHOTO_FILE_NAME,tag="Bougram,Jon") as img: 
+                                        img.write(f)
+                                        img.close()           
+                                f.close()
+                        except:
+                                try:
+                                        f=open(CH_PATH_TO_IMAGE_FILES+"/"+self.Jon_PHOTO_FILE_NAME,"br") 
+                                        with fs.new_file(filename=self.Jon_PHOTO_FILE_NAME,tag="Bougram,Jon") as img: 
+                                                img.write(f)
+                                                img.close()           
+                                        f.close()
+                                except:
+                                        f=open(ST_PATH_TO_IMAGE_FILES+"/"+self.Jon_PHOTO_FILE_NAME,"br") 
+                                        with fs.new_file(filename=self.Jon_PHOTO_FILE_NAME,tag="Bougram,Jon") as img: 
+                                                img.write(f)
+                                                img.close()           
+                                        f.close()                                  
         
         def test_case13_jon_update_record_with_photo(self):
                 '''update Jon record with the photo, and login credentials'''
@@ -366,11 +473,25 @@ class TestClass3_pymongo_healthcare_MiniEMR(unittest.TestCase):
                 if fs.exists(filename=self.Chris_PHOTO_FILE_NAME): 
                         print("Chris image file exists")
                 else:
-                        f=open(PATH_TO_IMAGE_FILES+"/"+self.Chris_PHOTO_FILE_NAME,"br") 
-                        with fs.new_file(filename=self.Chris_PHOTO_FILE_NAME,tag="Hill,Christian") as img: 
-                                img.write(f)
-                                img.close()           
-                        f.close()
+                        try:
+                                f=open(PATH_TO_IMAGE_FILES+"/"+self.Chris_PHOTO_FILE_NAME,"br") 
+                                with fs.new_file(filename=self.Chris_PHOTO_FILE_NAME,tag="Hill,Christian") as img: 
+                                        img.write(f)
+                                        img.close()           
+                                f.close()
+                        except:
+                                try:
+                                        f=open(CH_PATH_TO_IMAGE_FILES+"/"+self.Chris_PHOTO_FILE_NAME,"br") 
+                                        with fs.new_file(filename=self.Chris_PHOTO_FILE_NAME,tag="Hill,Christian") as img: 
+                                                img.write(f)
+                                                img.close()           
+                                        f.close()
+                                except:
+                                        f=open(ST_PATH_TO_IMAGE_FILES+"/"+self.Chris_PHOTO_FILE_NAME,"br") 
+                                        with fs.new_file(filename=self.Chris_PHOTO_FILE_NAME,tag="Hill,Christian") as img: 
+                                                img.write(f)
+                                                img.close()           
+                                        f.close()                                         
 
         def test_case15_chris_update_record_with_photo(self):
                 '''update Chris record with the photo, and login credentials'''
@@ -395,18 +516,32 @@ class TestClass3_pymongo_healthcare_MiniEMR(unittest.TestCase):
                                 employee_collection.update_one(
                                         {'_id':ghouse_record_query_result.get('_id')},
                                         {'$set':{'photo':img._id, 'username':chris_username,'password':hashed_salted_password}})
-                        img.close()       
+                        img.close()                        
 
         def test_case16_scott_upload_photo(self):
                 fs = gridfs.GridFS(self.db)
                 if fs.exists(filename=self.Scott_PHOTO_FILE_NAME): 
                         print("Scott image file exists")
                 else:
-                        f=open(PATH_TO_IMAGE_FILES+"/"+self.Scott_PHOTO_FILE_NAME,"br") 
-                        with fs.new_file(filename=self.Scott_PHOTO_FILE_NAME,tag="Thompson,Scott") as img: 
-                                img.write(f)
-                                img.close()           
-                        f.close()
+                        try:
+                                f=open(PATH_TO_IMAGE_FILES+"/"+self.Scott_PHOTO_FILE_NAME,"br") 
+                                with fs.new_file(filename=self.Scott_PHOTO_FILE_NAME,tag="Thompson,Scott") as img: 
+                                        img.write(f)
+                                        img.close()           
+                                f.close()
+                        except:
+                                try:
+                                        f=open(CH_PATH_TO_IMAGE_FILES+"/"+self.Scott_PHOTO_FILE_NAME,"br") 
+                                        with fs.new_file(filename=self.Scott_PHOTO_FILE_NAME,tag="Thompson,Scott") as img: 
+                                                img.write(f)
+                                                img.close()           
+                                        f.close()
+                                except:
+                                        f=open(ST_PATH_TO_IMAGE_FILES+"/"+self.Scott_PHOTO_FILE_NAME,"br") 
+                                        with fs.new_file(filename=self.Scott_PHOTO_FILE_NAME,tag="Thompson,Scott") as img: 
+                                                img.write(f)
+                                                img.close()           
+                                        f.close()                                    
 
         def test_case17_scott_update_record_with_photo(self):
                 '''update Scott record with the photo, and login credentials'''
@@ -431,6 +566,6 @@ class TestClass3_pymongo_healthcare_MiniEMR(unittest.TestCase):
                                 employee_collection.update_one(
                                         {'_id':ghouse_record_query_result.get('_id')},
                                         {'$set':{'photo':img._id, 'username':scott_username,'password':hashed_salted_password}})
-                        img.close()                   
+                        img.close()
 
 if __name__ == '__main__': unittest.main()
