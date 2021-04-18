@@ -6,8 +6,8 @@ from random import randint
 import gridfs
 from import_help import modINFO74000
 import modINFO74000.misc_func as misc
-from modINFO74000.misc_func import CH_PATH_TO_JSON_FILES
-from modINFO74000.misc_func import CH_PATH_TO_IMAGE_FILES
+from modINFO74000.misc_func import PATH_TO_JSON_FILES
+from modINFO74000.misc_func import PATH_TO_IMAGE_FILES
 import modINFO74000.emr_crypto as crypto
 
 PATH_TO_IMAGE_FILES='C:/Users/jboug/Desktop/Fourth Year/Fourth Year, First Semester/Clinical Systems 2/project_code/Clinical-Systems-Project/jon_p1/images'
@@ -259,6 +259,7 @@ class TestClass3_pymongo_healthcare_MiniEMR(unittest.TestCase):
         BTEST_PHOTO_FILE_NAME='bob_test.png'
         Jon_PHOTO_FILE_NAME='ryuarchfiend.png'
         Chris_PHOTO_FILE_NAME='monsterhunter.png'
+        Scott_PHOTO_FILE_NAME='lion.png'
 
         def test_case08_ghouse_upload_photo(self):
                 fs = gridfs.GridFS(self.db)
@@ -394,6 +395,42 @@ class TestClass3_pymongo_healthcare_MiniEMR(unittest.TestCase):
                                 employee_collection.update_one(
                                         {'_id':ghouse_record_query_result.get('_id')},
                                         {'$set':{'photo':img._id, 'username':chris_username,'password':hashed_salted_password}})
-                        img.close()                        
+                        img.close()       
+
+        def test_case16_scott_upload_photo(self):
+                fs = gridfs.GridFS(self.db)
+                if fs.exists(filename=self.Scott_PHOTO_FILE_NAME): 
+                        print("Scott image file exists")
+                else:
+                        f=open(PATH_TO_IMAGE_FILES+"/"+self.Scott_PHOTO_FILE_NAME,"br") 
+                        with fs.new_file(filename=self.Scott_PHOTO_FILE_NAME,tag="Thompson,Scott") as img: 
+                                img.write(f)
+                                img.close()           
+                        f.close()
+
+        def test_case17_scott_update_record_with_photo(self):
+                '''update Scott record with the photo, and login credentials'''
+                scott_username='srt'
+                scott_password='abc123'
+                hashed_salted_password = crypto.hash_salt_password(scott_password)
+                self.assertTrue(crypto.check_salt_password(hashed_salted_password,scott_password),'Passwords does not match')
+                self.assertFalse(crypto.check_salt_password(hashed_salted_password,"x"),'Password match (they should not!)')
+                EMPLOYEE_QUERY={'full_name': {'$regex' : "^Thompson"}} #use regex for query
+                fs = gridfs.GridFS(self.db)
+                with fs.get_last_version(self.Scott_PHOTO_FILE_NAME) as img:
+                        print('Found image file with id: ',img._id)  
+                        self.assertGreater(img.length,0,"Image file has zero length. Something is wrong.")
+                        #image is OK, now update his record
+                        employee_collection = self.db.employees
+                        ghouse_record_query_result=employee_collection.find_one(EMPLOYEE_QUERY)
+                        if ghouse_record_query_result==None:
+                                self.fail("Could not find Scott's record")                
+                        else:                                 
+                                print('Scott record found: ',ghouse_record_query_result)
+                                #check if record has the photo field; if not, add it
+                                employee_collection.update_one(
+                                        {'_id':ghouse_record_query_result.get('_id')},
+                                        {'$set':{'photo':img._id, 'username':scott_username,'password':hashed_salted_password}})
+                        img.close()                   
 
 if __name__ == '__main__': unittest.main()
