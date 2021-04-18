@@ -210,12 +210,12 @@ class TestClass3_pymongo_healthcare_MiniEMR(unittest.TestCase):
                                 print('ICD codes inserted: ',insert_result.inserted_ids)
                         except:
                                 try:
-                                        loincObjList=misc.LoadObjectFromJSONFile(CH_PATH_TO_JSON_FILES+"/icd10.json")
-                                        insert_result = loinc_collection.insert_many(loincObjList)
+                                        icdObjList=misc.LoadObjectFromJSONFile(CH_PATH_TO_JSON_FILES+"/icd10.json")
+                                        insert_result = icd_collection.insert_many(icdObjList)
                                         print('Loinc codes inserted: ',insert_result.inserted_ids)
                                 except:
-                                        loincObjList=misc.LoadObjectFromJSONFile(ST_PATH_TO_JSON_FILES+"/icd10.json")
-                                        insert_result = loinc_collection.insert_many(loincObjList)
+                                        icdObjList=misc.LoadObjectFromJSONFile(ST_PATH_TO_JSON_FILES+"/icd10.json")
+                                        insert_result = icd_collection.insert_many(icdObjList)
                                         print('Loinc codes inserted: ',insert_result.inserted_ids)
 
         def test_case02_patients(self):
@@ -227,13 +227,13 @@ class TestClass3_pymongo_healthcare_MiniEMR(unittest.TestCase):
                                 print('Patient records inserted: ',insert_result.inserted_ids)
                         except:
                                 try:
-                                        loincObjList=misc.LoadObjectFromJSONFile(CH_PATH_TO_JSON_FILES+"/patients.json")
-                                        insert_result = loinc_collection.insert_many(loincObjList)
-                                        print('Loinc codes inserted: ',insert_result.inserted_ids)
+                                        patientListObj=misc.LoadObjectFromJSONFile(CH_PATH_TO_JSON_FILES+"/patients.json")
+                                        insert_result = patient_collection.insert_many(patientListObj)
+                                        print('Patient records inserted: ',insert_result.inserted_ids)
                                 except:
-                                        loincObjList=misc.LoadObjectFromJSONFile(ST_PATH_TO_JSON_FILES+"/patients.json")
-                                        insert_result = loinc_collection.insert_many(loincObjList)
-                                        print('Loinc codes inserted: ',insert_result.inserted_ids)
+                                        patientListObj=misc.LoadObjectFromJSONFile(ST_PATH_TO_JSON_FILES+"/patients.json")
+                                        insert_result = patient_collection.insert_many(patientListObj)
+                                        print('Patient records inserted: ',insert_result.inserted_ids)
         
         def test_case02_admin(self):
                 patient_collection = self.db.D_administration
@@ -244,13 +244,13 @@ class TestClass3_pymongo_healthcare_MiniEMR(unittest.TestCase):
                                 print('Patient records inserted: ',insert_result.inserted_ids)
                         except:
                                 try:
-                                        loincObjList=misc.LoadObjectFromJSONFile(CH_PATH_TO_JSON_FILES+"/administration.json")
-                                        insert_result = loinc_collection.insert_many(loincObjList)
-                                        print('Loinc codes inserted: ',insert_result.inserted_ids)
+                                        patientListObj=misc.LoadObjectFromJSONFile(CH_PATH_TO_JSON_FILES+"/administration.json")
+                                        insert_result = patient_collection.insert_many(patientListObj)
+                                        print('Patient records inserted: ',insert_result.inserted_ids)
                                 except:
-                                        loincObjList=misc.LoadObjectFromJSONFile(ST_PATH_TO_JSON_FILES+"/administration.json")
-                                        insert_result = loinc_collection.insert_many(loincObjList)
-                                        print('Loinc codes inserted: ',insert_result.inserted_ids)
+                                        patientListObj=misc.LoadObjectFromJSONFile(ST_PATH_TO_JSON_FILES+"/administration.json")
+                                        insert_result = patient_collection.insert_many(patientListObj)
+                                        print('Patient records inserted: ',insert_result.inserted_ids)
 
         def test_case03_employees(self):
                 employee_collection = self.db.employees
@@ -261,13 +261,13 @@ class TestClass3_pymongo_healthcare_MiniEMR(unittest.TestCase):
                                 print('Employee records inserted: ',insert_result.inserted_ids)
                         except:
                                 try:
-                                        loincObjList=misc.LoadObjectFromJSONFile(CH_PATH_TO_JSON_FILES+"/empl.json")
-                                        insert_result = loinc_collection.insert_many(loincObjList)
-                                        print('Loinc codes inserted: ',insert_result.inserted_ids)
+                                        employeeListObj=misc.LoadObjectFromJSONFile(CH_PATH_TO_JSON_FILES+"/empl.json")
+                                        insert_result = employee_collection.insert_many(employeeListObj)
+                                        print('Employee records inserted: ',insert_result.inserted_ids)
                                 except:
-                                        loincObjList=misc.LoadObjectFromJSONFile(ST_PATH_TO_JSON_FILES+"/empl.json")
-                                        insert_result = loinc_collection.insert_many(loincObjList)
-                                        print('Loinc codes inserted: ',insert_result.inserted_ids)
+                                        employeeListObj=misc.LoadObjectFromJSONFile(ST_PATH_TO_JSON_FILES+"/empl.json")
+                                        insert_result = employee_collection.insert_many(employeeListObj)
+                                        print('Employee records inserted: ',insert_result.inserted_ids)
 
         def test_case04_employee_search(self):
                 EMPLOYEE_QUERY={'full_name': {'$regex' : "^WILSON"}} #use regex for query
@@ -303,13 +303,13 @@ class TestClass3_pymongo_healthcare_MiniEMR(unittest.TestCase):
                                 print('Drug records inserted: ',insert_result.inserted_ids)
                         except:
                                 try:
-                                        loincObjList=misc.LoadObjectFromJSONFile(CH_PATH_TO_JSON_FILES+"/drug_data.json")
-                                        insert_result = loinc_collection.insert_many(loincObjList)
-                                        print('Loinc codes inserted: ',insert_result.inserted_ids)
+                                        drugDataObj=misc.LoadObjectFromJSONFile(CH_PATH_TO_JSON_FILES+"/drug_data.json")
+                                        insert_result = formulary_collection.insert_many(drugDataObj["DrugReport"])
+                                        print('Drug records inserted: ',insert_result.inserted_ids)
                                 except:
-                                        loincObjList=misc.LoadObjectFromJSONFile(ST_PATH_TO_JSON_FILES+"/drug_data.json")
-                                        insert_result = loinc_collection.insert_many(loincObjList)
-                                        print('Loinc codes inserted: ',insert_result.inserted_ids)                                        
+                                        drugDataObj=misc.LoadObjectFromJSONFile(ST_PATH_TO_JSON_FILES+"/drug_data.json")
+                                        insert_result = formulary_collection.insert_many(drugDataObj["DrugReport"])
+                                        print('Drug records inserted: ',insert_result.inserted_ids)                                 
 
         def test_case07_drug_search(self):
                 DRUG_QUERY={'TRADENAME': {'$regex' : "^PAROXETINE"}} #use regex for query
