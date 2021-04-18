@@ -191,7 +191,7 @@ class TestClass3_pymongo_healthcare_MiniEMR(unittest.TestCase):
                                 loincObjList=misc.LoadObjectFromJSONFile(PATH_TO_JSON_FILES+"/Loinc_covid.json")
                                 insert_result = loinc_collection.insert_many(loincObjList)
                                 print('Loinc codes inserted: ',insert_result.inserted_ids)
-                        except (FileNotFoundError):
+                        except:
                                 try:
                                         loincObjList=misc.LoadObjectFromJSONFile(CH_PATH_TO_JSON_FILES+"/Loinc_covid.json")
                                         insert_result = loinc_collection.insert_many(loincObjList)
@@ -208,7 +208,7 @@ class TestClass3_pymongo_healthcare_MiniEMR(unittest.TestCase):
                                 icdObjList=misc.LoadObjectFromJSONFile(PATH_TO_JSON_FILES+"/icd10.json")
                                 insert_result = icd_collection.insert_many(icdObjList)
                                 print('ICD codes inserted: ',insert_result.inserted_ids)
-                        except (FileNotFoundError):
+                        except:
                                 try:
                                         loincObjList=misc.LoadObjectFromJSONFile(CH_PATH_TO_JSON_FILES+"/icd10.json")
                                         insert_result = loinc_collection.insert_many(loincObjList)
@@ -225,7 +225,7 @@ class TestClass3_pymongo_healthcare_MiniEMR(unittest.TestCase):
                                 patientListObj=misc.LoadObjectFromJSONFile(PATH_TO_JSON_FILES+"/patients.json")
                                 insert_result = patient_collection.insert_many(patientListObj)
                                 print('Patient records inserted: ',insert_result.inserted_ids)
-                        except (FileNotFoundError):
+                        except:
                                 try:
                                         loincObjList=misc.LoadObjectFromJSONFile(CH_PATH_TO_JSON_FILES+"/patients.json")
                                         insert_result = loinc_collection.insert_many(loincObjList)
@@ -242,7 +242,7 @@ class TestClass3_pymongo_healthcare_MiniEMR(unittest.TestCase):
                                 patientListObj=misc.LoadObjectFromJSONFile(PATH_TO_JSON_FILES+"/administration.json")
                                 insert_result = patient_collection.insert_many(patientListObj)
                                 print('Patient records inserted: ',insert_result.inserted_ids)
-                        except (FileNotFoundError):
+                        except:
                                 try:
                                         loincObjList=misc.LoadObjectFromJSONFile(CH_PATH_TO_JSON_FILES+"/administration.json")
                                         insert_result = loinc_collection.insert_many(loincObjList)
@@ -259,7 +259,7 @@ class TestClass3_pymongo_healthcare_MiniEMR(unittest.TestCase):
                                 employeeListObj=misc.LoadObjectFromJSONFile(PATH_TO_JSON_FILES+"/empl.json")
                                 insert_result = employee_collection.insert_many(employeeListObj)
                                 print('Employee records inserted: ',insert_result.inserted_ids)
-                        except (FileNotFoundError):
+                        except:
                                 try:
                                         loincObjList=misc.LoadObjectFromJSONFile(CH_PATH_TO_JSON_FILES+"/empl.json")
                                         insert_result = loinc_collection.insert_many(loincObjList)
@@ -301,7 +301,7 @@ class TestClass3_pymongo_healthcare_MiniEMR(unittest.TestCase):
                                 drugDataObj=misc.LoadObjectFromJSONFile(PATH_TO_JSON_FILES+"/drug_data.json")
                                 insert_result = formulary_collection.insert_many(drugDataObj["DrugReport"])
                                 print('Drug records inserted: ',insert_result.inserted_ids)
-                        except (FileNotFoundError):
+                        except:
                                 try:
                                         loincObjList=misc.LoadObjectFromJSONFile(CH_PATH_TO_JSON_FILES+"/drug_data.json")
                                         insert_result = loinc_collection.insert_many(loincObjList)
