@@ -330,45 +330,66 @@ class MainWindow(tk.Tk):
         #setting up barcode scanner
         def onMRNBarcodeRead(MRN):
             print("patient MRN scanned:",MRN)
+            #what to put here?
             PatientList.selectPatientByMRN(MRN)
+            #maybe here you have to do something to update the UI with the current patient?
             self.main_frame.updatePatientUI()
-            
+
+
         def onIENBarcodeRead(IEN):
             print("employee IEN scanned:",IEN)
-            if CurrentProvider.Record['IEN']!=IEN:
-                logoutUser()
-            
-            providerRecord = getEmployeeRecordByIEN(IEN)
-            if providerRecord!=None:
-
-                provider_username = providerRecord['username']
-                print(provider_username)
-                #We need to do code that will target the username box and insert the scanned IENs username
-                self.login_win.loginUIFrame.UserNameTextBox.insert("end",provider_username)
+            #updated Mar 18, 2020
+            if CurrentProvider.Record!=None:
+                if IEN==CurrentProvider.Record['IEN']:
+                    messagebox.showinfo( APP_NAME,'Employee badge scanned as '+CurrentProvider.Record['full_name'])
+                else:
+                    logoutUser()
+            #lookup username - some already implemented this as getProviderByIEN()
+            employeeRecord=MiniEMRMongo.db.employees.find_one({"IEN":IEN})            
+            if employeeRecord!=None and 'username' in employeeRecord:
+                self.login_win.loginUIFrame.UserNameTextBox.insert('end',employeeRecord["username"])
                 self.login_win.loginUIFrame.PasswordTextBox.focus()
+            else:
+                print('no employee found in database')
+                self.login_win.loginUIFrame.UserNameTextBox.focus()
+                
 
         def onDINBarcodeRead(DIN):
             print("drug DIN scanned:",DIN)
-            MedList.findDrugbyDIN(DIN)
-            record_query_result = MiniEMRMongo.db.drug_formulary.find_one({'DIN': (DIN)})
-            if record_query_result == None:
-                messagebox.showinfo('ERROR',' The scanned medication is not in the system\nDO NOT ADMINISTER')
-
+            patient=PatientList.current()
+            drug_order=None
+            if 'orders' in patient and 'medications' in patient['orders']:
+                for med in patient['orders']['medications']:
+                    #assume DIN field exists in the drug order or else it blows up
+                    if med['DIN']==DIN:
+                        drug_order=med
+                        break
+            
+            drug_info=MiniEMRMongo.db.drug_formulary.find_one({"DIN":DIN})            
+            if not drug_info:
+                messagebox.showerror(title="Drug barcode scan error ",message="Drug with DIN: {0} not found in the database".format(DIN))
             else:
-                print("drug scanned; DIN:", MedList.current()["DIN"] , ' TRADENAME: ' , MedList.current()["TRADENAME"])
-                if "medications" in PatientList.current()["orders"]:
-                    is_in_list = False
-                    for med in PatientList.current()["orders"]["medications"]:
-                        if med["DIN"] == DIN:
-                            messagebox.showinfo('Alert', ' This Medication is in the patient\'s current medication list')
-                            is_in_list = True
-                            # add administration recording with date + time and IEN
-                            break
-                        else:
-                            continue
-                    if is_in_list == False:
-                        messagebox.showinfo('Critical Alert',' The scanned medication is not prescribed to the current patient\nDO NOT ADMINISTER')
-        
+                if drug_order:
+                    if messagebox.askokcancel(title="Confirm administration",message="{0}, dose:{1} is to be administered to {2}, MRN{3}".format(\
+                        drug_info['TRADENAME'],drug_order['dose'], patient['name'],patient['id'])):
+                        #add administration record to patient record
+                        from datetime import datetime
+                        current_dt_iso=datetime.utcnow()
+                        drug_admin_info= {
+                                "date_time":    current_dt_iso.isoformat()+'Z',
+                                "notes":"",
+                                "AuthIEN":      CurrentProvider.Record['IEN']
+                                }
+                        drug_order_index=patient['orders']['medications'].index(drug_order)
+                        PatientList.updateCurrentPatientDrugAdministrationRecord(drug_order_index,drug_admin_info)
+                else:
+                    messagebox.showwarning(title="Do NOT give!",message="{0} is not in the list of medications for {1}, MRN:{2}".format(\
+                        drug_info['TRADENAME'], patient['name'], patient['id']))
+                    #add administration attempt to patient record or to some log for audit, analysis, etc?
+                #since database was updated, a patient list refresh and UI update are necessary
+                PatientList.refresh()
+                self.main_frame.updatePatientUI()
+       
         self.bScanner=BarcodeScanner(self,onMRNBarcodeRead,onIENBarcodeRead,onDINBarcodeRead)
     
     def __init__(self):
@@ -382,6 +403,10 @@ class MainWindow(tk.Tk):
 main_win = MainWindow()
 #connect to mongodb just before main loop
 MiniEMRMongo.connect()
+
+if NO_LOGON_TESTING:
+    #must have default provider, when no logon testing, or drug admin and vital recording will crash
+    CurrentProvider.Record=MiniEMRMongo.db.employees.find_one({'IEN':'80'})
 
 #retrieves the list of patients
 PatientList.refresh()

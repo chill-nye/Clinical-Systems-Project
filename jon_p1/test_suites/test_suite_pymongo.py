@@ -568,4 +568,62 @@ class TestClass3_pymongo_healthcare_MiniEMR(unittest.TestCase):
                                         {'$set':{'photo':img._id, 'username':scott_username,'password':hashed_salted_password}})
                         img.close()
 
+        def test_case18_alice_test_update_record_with_new_random_vitals_measurement(self):
+                '''updates Alice Test patient record with new vitals data'''
+                from datetime import datetime
+                ALICE_TEST_PATIENT_QUERY={'id': 1234} 
+                patient_collection = self.db.patients
+                atest_record_query_result=patient_collection.find_one(ALICE_TEST_PATIENT_QUERY)
+                if atest_record_query_result==None:
+                        self.fail("Could not find Alice Test's record")                
+                else:                                 
+                        print("Alice Test record found")
+                        vitals_list=atest_record_query_result.get('vitals')
+                        print("Alice Test's vitals:",vitals_list)
+                        #creates vitals object with random measurements
+                        current_dt_iso=datetime.utcnow()               
+                        vitals_object= {
+                                "date_time":    current_dt_iso.isoformat()+'Z',
+                                "P":            randint(30, 90),
+                                "R":            randint(5, 40),
+                                "POX":          randint(80, 98),
+                                "BP":   {       "sys":randint(70, 220),
+                                                "dia":randint(40, 90)},
+                                "AuthIEN":      randint(1, 120),
+                                }
+                        #updates record by pushing the vitals object into the vitals array/list         
+                        update_result=patient_collection.update_one(
+                                {'_id':atest_record_query_result.get('_id')},
+                                {'$push':{'vitals':vitals_object}})
+                        print("update result:",update_result.raw_result)        
+
+
+        def test_case19_rob_test_update_record_with_drug_admin_record(self):
+                '''updates Rob patient record with new vitals data'''
+                from datetime import datetime
+                ROB_TEST_PATIENT_QUERY={'id': 12345} 
+                patient_collection = self.db.patients
+                atest_record_query_result=patient_collection.find_one(ROB_TEST_PATIENT_QUERY)
+                if atest_record_query_result==None:
+                        self.fail("Could not find Rob's record")                
+                else:                                 
+                        print("Rob Test record found")
+                        med_order_list=atest_record_query_result.get('orders.medications')
+                        print("Rob Test's medications:",med_order_list)
+                        #creates medication admininstration object
+                        current_dt_iso=datetime.utcnow()               
+                        drug_admin_info= {
+                                "date_time":    current_dt_iso.isoformat()+'Z',
+                                "notes":"this is a test",
+                                "AuthIEN":      80
+                                }                        
+                        drug_order_index=1
+                        #updates drug administration record by pushing the administration info object into the admin array/list 
+                        #of that drug order
+                        update_result=patient_collection.update_one(
+                                {'_id':atest_record_query_result.get('_id')},
+                                {'$push':{'orders.medications.{0}.admin'.format(drug_order_index):drug_admin_info}})
+                        print("update result:",update_result.raw_result)        
+
+
 if __name__ == '__main__': unittest.main()
