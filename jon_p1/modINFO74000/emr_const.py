@@ -24,5 +24,5 @@ PATH_TO_IMAGE_FILES='C:/Users/jboug/Desktop/Fourth Year/Fourth Year, First Semes
 PATH_TO_JSON_FILES='C:/Users/jboug/Desktop/Fourth Year/Fourth Year, First Semester/Clinical Systems 2//project_code/Clinical-Systems-Project/jon_p1/json_examples'
 CH_PATH_TO_IMAGE_FILES = 'C:/Users/Chill Nye/Documents/GitHub/Clinical-Systems-Project/jon_p1/images'
 CH_PATH_TO_JSON_FILES = 'C:/Users/Chill Nye/Documents/GitHub/Clinical-Systems-Project/jon_p1/json_examples'
-ST_PATH_TO_IMAGE_FILES = 'C:/Users/Chill Nye/Documents/GitHub/Clinical-Systems-Project/jon_p1/images'
-ST_PATH_TO_JSON_FILES = 'C:/Users/Chill Nye/Documents/GitHub/Clinical-Systems-Project/jon_p1/json_examples'
+ST_PATH_TO_IMAGE_FILES = 'C:/Users/srt74/Dev/Clinical-Systems-Project/jon_p1/images'
+ST_PATH_TO_JSON_FILES = 'C:/Users/srt74/Dev/Clinical-Systems-Project/jon_p1/json_examples'
