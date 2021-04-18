@@ -240,11 +240,12 @@ class UpdateCurrentProviderPassword(TopDialogWindow):
         oldpasswordvar = self.passwordChangeUI.oldpassword.get()
         newpasswordvar = self.passwordChangeUI.newpassword.get()
         confirmnewpasswordvar = self.passwordChangeUI.confirmnewpassword.get()
-        if oldpasswordvar == CurrentProvider.Record['password'] and newpasswordvar == confirmnewpasswordvar:
+        if check_salt_password(CurrentProvider.Record['password'], oldpasswordvar) == True and newpasswordvar == confirmnewpasswordvar:
             employee_collection = MiniEMRMongo.db.employees
+            hashed_salted_password = hash_salt_password(newpasswordvar)
             employee_collection.update_one(
                                     {'_id':CurrentProvider.Record['_id']},
-                                    {'$set':{'password':newpasswordvar}})
+                                    {'$set':{'password':hashed_salted_password}})
             self.hide()
             messagebox.showinfo("Updated Password","Password has been successfully changed.")
         else:
