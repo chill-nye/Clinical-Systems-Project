@@ -14,6 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
 '''
+
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
@@ -37,7 +38,8 @@ import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.figure import Figure
-
+import matplotlib.pyplot as plt
+import matplotlib.dates as md
 DB_DATE_TIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
 
 class MainWindowFrame(tk.Frame):
@@ -129,6 +131,22 @@ class MainWindowFrame(tk.Frame):
                     self.problemsListbox.insert('end',query_result["desc"])                    
                     patientSummary+="<li>"+query_result["desc"]+"</li>"        
 
+        #vitals + populate Vitals tab
+        patientSummary+="<br/><b><u>Vitals</u></b>:<ul>"
+        self.vitalsListbox.delete(0,self.vitalsListbox.size()-1)
+        if len(patient['vitals']) > 0:
+            for i in patient['vitals']:
+                if i["type"] == "BP":
+                    self.vitalsListbox.insert('end',i["type"]+i["value"]["sys"]+i["value"]["dia"])
+                    patientSummary+= str(i["type"]+i["value"]["sys"]+i["value"]["dia"])
+                else:
+                    self.vitalsListbox.insert('end',i["type"]+i["value"])
+                    patientSummary+= str(i["type"]+i["value"])
+        else:
+            orders_labs = '<li>No current labs found</li>'
+        patientSummary += "</ul>"
+
+
         #administration + popoulate Report tab
         patientSummary += '<br/><b><u>Administration Events</u></b>:<ul>'
         self.adminListbox.delete(0,self.adminListbox.size()-1)
@@ -156,15 +174,121 @@ class MainWindowFrame(tk.Frame):
         # for med in patient["orders"]["medications"]:
         #     self.medsListbox.insert('end', med["TRADENAME"]+', '+med["DIN"])
 
-        f = Figure(figsize=(5,5), dpi=100)
-        a = f.add_subplot(111)
-        x = []
-        y = []
+
+        sys = [] 
+        dia = []
+            
+        R = []
+        R_date = []
+            
+        P = []
+        P_date = []
+
+        POX= []
+        POX_date= []
+
+        WT = []
+        WT_date= []
+            
+        BMI=[]
+        BMI_date =[]
+            
+        HT=[]
+        HT_date = []
+            
+        PN=[]
+        PN_date = []
+            
+        T=[]
+        T_date= []
+
         for i in patient['vitals']:
-            if i['type'] == 'BP':
-                x.append(i['dtf'])
-                y.append(int(i['value']['sys']))
-        a.plot(x,y)
+            if i['type'] == 'BR':
+                R_date.append(i['dtf'])
+                R.append(int(i['value']))
+
+        for i in patient['vitals']:
+            if i['type'] == 'BR':
+                P_date.append(i['dtf'])
+                P.append(int(i['value']))
+
+        for i in patient['vitals']:
+            if i['type'] == 'R':
+                R_date.append(i['dtf'])
+                R.append(int(i['value']))
+
+        for i in patient['vitals']:
+            if i['type'] == 'P':
+                P_date.append(i['dtf'])
+                P.append(int(i['value']))
+
+        for i in patient['vitals']:
+            if i['type'] == 'HT':
+                HT_date.append(i['dtf'])
+                HT.append(int(i['value']))
+
+        for i in patient['vitals']:
+            if i['type'] == 'WT':
+                WT_date.append(i['dtf'])
+                WT.append(int(i['value']))
+
+        for i in patient['vitals']:
+            if i['type'] == 'PN':
+                PN_date.append(i['dtf'])
+                PN.append(int(i['value']))
+
+        for i in patient['vitals']:
+            if i['type'] == 'POX':
+                POX_date.append(i['dtf'])
+                POX.append(int(i['value']))
+
+        for i in patient['vitals']:
+            if i['type'] == 'BMI':
+                BMI_date.append(i['dtf'])
+                BMI.append(float(i['value']))
+
+        f = Figure(figsize=(10,5), dpi=100)
+
+        a = f.add_subplot(331, title="Respiration", ylabel="resp/min")
+        a.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
+        plt.xticks(rotation=90)
+        a.plot(R_date, R)
+
+        c = f.add_subplot(333, title = "Pulse",xlabel="", ylabel="bpm")
+        c.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
+        plt.xticks(rotation=90)
+        c.plot(P_date, P)
+
+        d = f.add_subplot(334, title = "Pulse Oximetry",xlabel="", ylabel="%O2")
+        d.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
+        plt.xticks(rotation=90)
+        d.plot(POX_date, POX)
+
+        e = f.add_subplot(335, title = "Weight",xlabel="", ylabel="kg")
+        e.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
+        plt.xticks(rotation=90)
+        e.plot(WT_date, WT)
+
+        g = f.add_subplot(336, title = "Body Mass Index",xlabel="", ylabel="%")
+        g.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
+        plt.xticks(rotation=90)
+        g.plot(BMI_date, BMI)
+
+        h = f.add_subplot(337, title = "Height",xlabel="", ylabel="CM")
+        h.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
+        plt.xticks(rotation=90)
+        h.plot(HT_date, HT)
+
+        i = f.add_subplot(338, title = "Pain",xlabel="", ylabel="")
+        i.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
+        plt.xticks(rotation=90)
+        i.plot(PN_date, PN)
+
+        j = f.add_subplot(339, title = "Temperature",xlabel="", ylabel="°C")
+        j.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
+        plt.xticks(rotation=90)
+        j.plot(T_date, T)
+
 
         canvas = FigureCanvasTkAgg(f, self.frametest)
         canvas.get_tk_widget().pack(expand=True)
@@ -247,6 +371,11 @@ class MainWindowFrame(tk.Frame):
         tabControl.add(tab5, text='Vitals')
         self.frametest = tk.Frame(tab5)
         self.frametest.pack(fill="both", expand=True)
+
+        tab7 = ttk.Frame(tabControl)
+        tabControl.add(tab7, text='Vitals')
+        self.vitalsListbox = Listbox(tab7)
+        self.vitalsListbox.pack(fill="both", expand=True)
 
         tab6 = ttk.Frame(tabControl)
         tabControl.add(tab6, text='Reports')
