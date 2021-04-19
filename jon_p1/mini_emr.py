@@ -419,6 +419,10 @@ class MainWindow(tk.Tk):
             self.editpatient_win=EditPatient(master=self)
             self.editpatient_win.show()            
 
+        def vaccinateFn():
+            self.vaccine_win=OrderVaccine(master=self)
+            self.vaccine_win.show()       
+
         def logoutUser():
             self.title(APP_NAME+" (logged out)")
             #may want to clear/reset all UIs elements
@@ -430,24 +434,24 @@ class MainWindow(tk.Tk):
         #logout menu
         if not NO_LOGON_TESTING:
             fileMenu.add_command(label="Log out", underline=0, command=logoutUser)
-
+            
+        fileMenu.add_command(label="Edit patient", command=EditPatientFn)
         fileMenu.add_separator()
 
         def exitMenuSelected():
                 self.quit()
         #exit menu
-        fileMenu.add_command(label="Edit patient", command=EditPatientFn)
         fileMenu.add_command(label="Exit", command=exitMenuSelected)
         
         viewMenu = Menu(menuBar, tearoff=0)
         menuBar.add_cascade(label="View", menu=viewMenu)    
-        #patient select menu
-        viewMenu.add_command(label="Select patient", command=selectPatient)
         viewMenu.add_command(label="Add new patient", command=addNewPatientFn)
+        viewMenu.add_command(label="Select patient", command=selectPatient)
 
         toolsMenu = Menu(menuBar, tearoff=0)
         menuBar.add_cascade(label="Tools", menu=toolsMenu)    
         toolsMenu.add_command(label="Change Password", command=changePassword)
+        toolsMenu.add_command(label="Order Vaccine", command=vaccinateFn)
                 
         helpMenu = Menu(menuBar, tearoff=0)
         menuBar.add_cascade(label="Help", menu=helpMenu)    

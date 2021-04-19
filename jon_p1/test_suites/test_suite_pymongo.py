@@ -201,6 +201,23 @@ class TestClass3_pymongo_healthcare_MiniEMR(unittest.TestCase):
                                         insert_result = loinc_collection.insert_many(loincObjList)
                                         print('Loinc codes inserted: ',insert_result.inserted_ids)
 
+        def test_case_vaccine(self):
+                vaccine_collection = self.db.loinc
+                if vaccine_collection.find_one({})==None:
+                        try:
+                                vaccineObjList=misc.LoadObjectFromJSONFile(PATH_TO_JSON_FILES+"/vaccine.json")
+                                insert_result = vaccine_collection.insert_many(vaccineObjList)
+                                print('Vaccines codes inserted: ',insert_result.inserted_ids)
+                        except:
+                                try:
+                                        vaccineObjList=misc.LoadObjectFromJSONFile(CH_PATH_TO_JSON_FILES+"/vaccine.json")
+                                        insert_result = vaccine_collection.insert_many(vaccineObjList)
+                                        print('Vaccines codes inserted: ',insert_result.inserted_ids)
+                                except:
+                                        vaccineObjList=misc.LoadObjectFromJSONFile(ST_PATH_TO_JSON_FILES+"/vaccine.json")
+                                        insert_result = vaccine_collection.insert_many(vaccineObjList)
+                                        print('Vaccines codes inserted: ',insert_result.inserted_ids)
+
         def test_case_icd(self):
                 icd_collection = self.db.icd10
                 if icd_collection.find_one({})==None:
