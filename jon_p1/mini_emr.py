@@ -278,7 +278,11 @@ class MainWindow(tk.Tk):
         def selectPatient():
             patient_select_win=PatientSelectDialog(master=self,callback=self.main_frame.updatePatientUI)
             patient_select_win.show()
-            
+
+        def addNewPatientFn():
+            self.addpatient_win=AddNewPatient(master=self)
+            self.addpatient_win.show()
+
         def logoutUser():
             self.title(APP_NAME+" (logged out)")
             #may want to clear/reset all UIs elements
@@ -302,7 +306,7 @@ class MainWindow(tk.Tk):
         menuBar.add_cascade(label="View", menu=viewMenu)    
         #patient select menu
         viewMenu.add_command(label="Select patient", command=selectPatient)
-        viewMenu.add_command(label="Add new patient", command=selectPatient)
+        viewMenu.add_command(label="Add new patient", command=addNewPatientFn)
 
         toolsMenu = Menu(menuBar, tearoff=0)
         menuBar.add_cascade(label="Tools", menu=toolsMenu)    

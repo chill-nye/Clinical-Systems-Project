@@ -241,7 +241,7 @@ class UpdateCurrentProviderPassword(TopDialogWindow):
             employee_collection.update_one(
                                     {'_id':CurrentProvider.Record['_id']},
                                     {'$set':{'password':hashed_salted_password}})
-            self.hide()
+            self.destroy()
             messagebox.showinfo("Updated Password","Password has been successfully changed.")
         else:
             messagebox.showerror("Update error","Incorrect password or new passwords do not match.")
