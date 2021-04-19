@@ -28,6 +28,7 @@ from modINFO74000.emr_provider import *
 from modINFO74000.emr_patient import *
 from modINFO74000.emr_const import *
 from modINFO74000.emr_automation import BarcodeScanner
+from modINFO74000.emr_vitals import *
 
 from datetime import datetime
 from datetime import timedelta
@@ -40,13 +41,182 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 import matplotlib.dates as md
-DB_DATE_TIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
+DB_DATE_TIME_FORMAT="%Y-%m-%d"
 
 class MainWindowFrame(tk.Frame):
+    
+    def updateVitalsUI(self):
+        patient=PatientList.current()        
+        self.summaryScrolledText.replace('1.0','end',patient["name"]+"\n")
+        #Moved this from beneath the if statement
+        self.vital_data_series={} #dictionary for compiling all vital measurement by type, in a data series  
+        if 'vitals' in patient:
+         
+
+            self.summaryScrolledText.insert('end',"List vitals data by date/time:\n")
+            #list all vitals by recording date      
+            for vitals_object in patient['vitals']:   
+                #dealing with datetime and author metadata
+                record_date_time=datetime.strptime((vitals_object['datetime']),DATE_TIME_FORMAT)
+            
+                # using a list comprehension to filter only the vital types available in the object
+                # note that the object contains the date time stamp and author field (they are NOT vital type data)        
+                recorded_vital_types=[vt for vt in vitals_object if vt in VITAL_TYPE_LIST]
+            
+                for vt in recorded_vital_types:
+                    idx=VITAL_TYPE_LIST.index(vt)
+                    #initializes the vital data series dictionary  if needed
+                    if not vt in self.vital_data_series: self.vital_data_series[vt]=[] 
+                    #adds the vital type recording to the appropriate data series
+                    self.vital_data_series[vt].append({"datetime":record_date_time,"value":vitals_object[vt]})
+                    #adds vital record data to the output UI
+                    self.summaryScrolledText.insert('end',VITAL_TYPE_LABELS[idx]+':'+str(vitals_object[vt])+'\n')
+            
+            #adds author and date time to the output UI
+                self.summaryScrolledText.insert('end','Recorded by IEN='+str(vitals_object["AuthIEN"])+' on: '
+                    +record_date_time.strftime(DATE_TIME_FORMAT)
+                    +'\n------------------------------------\n')
+
+            self.summaryScrolledText.insert('end',"List vitals data by type:\n")        
+            #lists all vitals by vital type (data series)
+            
+            #for vt in VITAL_TYPE_LIST: <-- this created a bug
+            #BUG description: iterating by all types in VITAL_TYPE_LIST was a bug
+            #if a certain vital type was not in vital_data_series the code would fail
+            #the fix was using if vt in vital_data_series, or better yet,
+            #just iterate through the vital types that ARE in the vital_data_series object
+
+            for vt in self.vital_data_series: #this is better, no more "if" statement needed!
+                strVitalSeries=""
+                for value in self.vital_data_series[vt]: 
+                    strVitalSeries+=value["datetime"].strftime(DATE_TIME_FORMAT)+", value:"+str(value["value"])+'\n'          
+                self.summaryScrolledText.insert('end',vt+'\n'+strVitalSeries+'\n')
+
+            #here we list the last measured vitals. 
+            LastMeasuredVitalStr=""
+            for vt in self.vital_data_series:
+                serieslength = len(self.vital_data_series[vt])
+                if serieslength >0:
+                    idx=VITAL_TYPE_LIST.index(vt)
+                    LastVal = self.vital_data_series[vt][serieslength-1]
+                    LastMeasuredVitalStr += VITAL_TYPE_LABELS[idx]+ " " +str(LastVal["value"])+" measured on: " + LastVal["datetime"].strftime("%Y%M%D%H%M%S") + "\n"
+            self.summaryScrolledText.insert('end',"Last Measured Vitals:\n" + LastMeasuredVitalStr)
+
+        sys = [] 
+        dia = []
+            
+        R = []
+        R_date = []
+            
+        P = []
+        P_date = []
+
+        POX= []
+        POX_date= []
+
+        WT = []
+        WT_date= []
+            
+        BMI=[]
+        BMI_date =[]
+            
+        HT=[]
+        HT_date = []
+            
+        PN=[]
+        PN_date = []
+            
+        T=[]
+        T_date= []
+
+        for i in patient['vitals']:
+            if i['type'] == 'BR':
+                R_date.append(i['datetime'])
+                R.append(int(i['value']))
+
+        for i in patient['vitals']:
+            if i['type'] == 'BR':
+                P_date.append(i['datetime'])
+                P.append(int(i['value']))
+
+        for i in patient['vitals']:
+            if i['type'] == 'R':
+                R_date.append(i['datetime'])
+                R.append(int(i['value']))
+
+        for i in patient['vitals']:
+            if i['type'] == 'P':
+                P_date.append(i['datetime'])
+                P.append(int(i['value']))
+
+        for i in patient['vitals']:
+            if i['type'] == 'HCM':
+                HT_date.append(i['datetime'])
+                HT.append(int(i['value']))
+
+        for i in patient['vitals']:
+            if i['type'] == 'Wkg':
+                WT_date.append(i['datetime'])
+                WT.append(int(i['value']))
+
+        for i in patient['vitals']:
+            if i['type'] == 'PN':
+                PN_date.append(i['datetime'])
+                PN.append(int(i['value']))
+
+        for i in patient['vitals']:
+            if i['type'] == 'POX':
+                POX_date.append(i['datetime'])
+                POX.append(int(i['value']))
+
+        f = Figure(figsize=(10,5), dpi=100)
+
+        a = f.add_subplot(331, title="Respiration", ylabel="resp/min")
+        a.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
+        a.plt.xticks(rotation=90)
+        a.plot(R_date, R)
+
+        c = f.add_subplot(333, title = "Pulse",xlabel="", ylabel="bpm")
+        c.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
+        c.plt.xticks(rotation=90)
+        c.plot(P_date, P)
+
+        d = f.add_subplot(334, title = "Pulse Oximetry",xlabel="", ylabel="%O2")
+        d.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
+        d.plt.xticks(rotation=90)
+        d.plot(POX_date, POX)
+
+        e = f.add_subplot(335, title = "Weight",xlabel="", ylabel="kg")
+        e.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
+        e.plt.xticks(rotation=90)
+        e.plot(WT_date, WT)
+
+        g = f.add_subplot(337, title = "Height",xlabel="", ylabel="CM")
+        g.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
+        g.plt.xticks(rotation=90)
+        g.plot(HT_date, HT)
+
+        h = f.add_subplot(338, title = "Pain",xlabel="", ylabel="")
+        h.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
+        h.plt.xticks(rotation=90)
+        h.plot(PN_date, PN)
+
+
+        canvas = FigureCanvasTkAgg(f, self.frametest)
+        canvas.get_tk_widget().pack(expand=True)
+        canvas.draw()
+
+    def clear_vitalsUI(self):
+        print('clearing the vitals UI')
+        for x in self.tab5.winfo_children():
+            x.pack_forget()
+
+        
+    
     def updatePatientUI(self):
         patient=PatientList.current()
         patientSummary = ""
-
+        DB_DATE_TIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
         #dob
         dob = datetime.strptime(patient['dob'], DB_DATE_TIME_FORMAT)
         age_years = (datetime.today()-dob)//timedelta(days=365.2425)
@@ -129,20 +299,32 @@ class MainWindowFrame(tk.Frame):
                     patientSummary+="<li>"+query_result["desc"]+"</li>"        
 
         #vitals + populate Vitals tab
-        patientSummary+="<br/><b><u>Vitals</u></b>:<ul>"
-        self.vitalsListbox.delete(0,self.vitalsListbox.size()-1)
-        if len(patient['vitals']) > 0:
-            for i in patient['vitals']:
-                if i["type"] == "BP":
-                    self.vitalsListbox.insert('end',i["type"]+i["value"]["sys"]+i["value"]["dia"])
-                    patientSummary+= str(i["type"]+i["value"]["sys"]+i["value"]["dia"])
-                else:
-                    self.vitalsListbox.insert('end',i["type"]+i["value"])
-                    patientSummary+= str(i["type"]+i["value"])
-        else:
-            orders_labs = '<li>No current labs found</li>'
-        patientSummary += "</ul>"
+        # patientSummary+="<br/><b><u>Vitals</u></b>:<ul>"
+        # self.vitalsListbox.delete(0,self.vitalsListbox.size()-1)
+        # if len(patient['vitals']) > 0:
+        #     for i in patient['vitals']:
+        #         if i["type"] == "BP":
+        #             self.vitalsListbox.insert('end',i["type"]+i["value"]["sys"]+i["value"]["dia"])
+        #             patientSummary+= str(i["type"][-1]+i["value"]["sys"][-1]+i["value"]["dia"][-1])
+        #         else:
+        #             self.vitalsListbox.insert('end',i["type"]+i["value"])
+        #             patientSummary+= str(i["type"]+i["value"][-1])
+        # else:
+        #     orders_labs = '<li>No current labs found</li>'
+        # patientSummary += "</ul>"
 
+        self.updateVitalsUI()        
+        patientSummary+= 'Last Vitals Values: <ul>' 
+        LastMeasuredVitalStr=""
+        for vt in self.vital_data_series:
+            serieslength = len(self.vital_data_series[vt])
+            if serieslength >0:
+                idx=VITAL_TYPE_LIST.index(vt)
+                LastVal = self.vital_data_series[vt][serieslength-1]
+                LastMeasuredVitalStr += "<li>" + VITAL_TYPE_LABELS[idx]+ " " +str(LastVal["value"])+" measured on: " + LastVal["datetime"].strftime("%D-%H:%m:%S") + "</li>"
+                
+        
+        patientSummary+= LastMeasuredVitalStr + '<ul>'
 
         #administration + popoulate Report tab
         patientSummary += '<br/><b><u>Administration Events</u></b>:<ul>'
@@ -171,145 +353,196 @@ class MainWindowFrame(tk.Frame):
         # for med in patient["orders"]["medications"]:
         #     self.medsListbox.insert('end', med["TRADENAME"]+', '+med["DIN"])
 
+    def updateVitalsUI(self):
+        patient=PatientList.current()        
+        self.summaryScrolledText.replace('1.0','end',patient["name"]+"\n")
+        #Moved this from beneath the if statement
+        self.vital_data_series={} #dictionary for compiling all vital measurement by type, in a data series  
+        if 'vitals' in patient:
+         
 
-        sys = [] 
-        dia = []
+            self.summaryScrolledText.insert('end',"List vitals data by date/time:\n")
+            #list all vitals by recording date      
+            for vitals_object in patient['vitals']:   
+                #dealing with datetime and author metadata
+                record_date_time=datetime.strptime((vitals_object['datetime']),DATE_TIME_FORMAT)
             
-        R = []
-        R_date = []
+                # using a list comprehension to filter only the vital types available in the object
+                # note that the object contains the date time stamp and author field (they are NOT vital type data)        
+                recorded_vital_types=[vt for vt in vitals_object if vt in VITAL_TYPE_LIST]
             
-        P = []
-        P_date = []
-
-        POX= []
-        POX_date= []
-
-        WT = []
-        WT_date= []
+                for vt in recorded_vital_types:
+                    idx=VITAL_TYPE_LIST.index(vt)
+                    #initializes the vital data series dictionary  if needed
+                    if not vt in self.vital_data_series: self.vital_data_series[vt]=[] 
+                    #adds the vital type recording to the appropriate data series
+                    self.vital_data_series[vt].append({"datetime":record_date_time,"value":vitals_object[vt]})
+                    #adds vital record data to the output UI
+                    self.summaryScrolledText.insert('end',VITAL_TYPE_LABELS[idx]+':'+str(vitals_object[vt])+'\n')
             
-        BMI=[]
-        BMI_date =[]
+            #adds author and date time to the output UI
+                self.summaryScrolledText.insert('end','Recorded by IEN='+str(vitals_object["AuthIEN"])+' on: '
+                    +record_date_time.strftime(DATE_TIME_FORMAT)
+                    +'\n------------------------------------\n')
+
+            self.summaryScrolledText.insert('end',"List vitals data by type:\n")        
+            #lists all vitals by vital type (data series)
             
-        HT=[]
-        HT_date = []
+            #for vt in VITAL_TYPE_LIST: <-- this created a bug
+            #BUG description: iterating by all types in VITAL_TYPE_LIST was a bug
+            #if a certain vital type was not in vital_data_series the code would fail
+            #the fix was using if vt in vital_data_series, or better yet,
+            #just iterate through the vital types that ARE in the vital_data_series object
+
+            for vt in self.vital_data_series: #this is better, no more "if" statement needed!
+                strVitalSeries=""
+                for value in self.vital_data_series[vt]: 
+                    strVitalSeries+=value["datetime"].strftime(DATE_TIME_FORMAT)+", value:"+str(value["value"])+'\n'          
+                self.summaryScrolledText.insert('end',vt+'\n'+strVitalSeries+'\n')
+
+            #here we list the last measured vitals. 
+            LastMeasuredVitalStr=""
+            for vt in self.vital_data_series:
+                serieslength = len(self.vital_data_series[vt])
+                if serieslength >0:
+                    idx=VITAL_TYPE_LIST.index(vt)
+                    LastVal = self.vital_data_series[vt][serieslength-1]
+                    LastMeasuredVitalStr += VITAL_TYPE_LABELS[idx]+ " " +str(LastVal["value"])+" measured on: " + LastVal["datetime"].strftime("%Y%M%D%H%M%S") + "\n"
+            self.summaryScrolledText.insert('end',"Last Measured Vitals:\n" + LastMeasuredVitalStr)
+
+
+            sys = []
+            dia = []
+            BP_date = []
             
-        PN=[]
-        PN_date = []
+            R = []
+            R_date = []
             
-        T=[]
-        T_date= []
+            P = []
+            P_date = []
 
-        for i in patient['vitals']:
-            if i['type'] == 'BR':
-                R_date.append(i['dtf'])
-                R.append(int(i['value']))
+            POX= []
+            POX_date= []
 
-        for i in patient['vitals']:
-            if i['type'] == 'BR':
-                P_date.append(i['dtf'])
-                P.append(int(i['value']))
+            Wkg = []
+            Wkg_date= []
+            
+            BMI=[]
+            BMI_date =[]
+            
+            HCM=[]
+            HCM_date = []
+            
+            PN=[]
+            PN_date = []
 
-        for i in patient['vitals']:
-            if i['type'] == 'R':
-                R_date.append(i['dtf'])
-                R.append(int(i['value']))
 
-        for i in patient['vitals']:
-            if i['type'] == 'P':
-                P_date.append(i['dtf'])
-                P.append(int(i['value']))
 
-        for i in patient['vitals']:
-            if i['type'] == 'HT':
-                HT_date.append(i['dtf'])
-                HT.append(int(i['value']))
+            for vitals_object in patient['vitals']:
+                if 'BP' in vitals_object: 
+                    sys.append(vitals_object['BP']['sys'])
+                    dia.append(vitals_object['BP']['dia'])
+                    BP_datetime = datetime.strptime((vitals_object['datetime']),DATE_TIME_FORMAT)
+                    BP_date.append(BP_datetime)
 
-        for i in patient['vitals']:
-            if i['type'] == 'WT':
-                WT_date.append(i['dtf'])
-                WT.append(int(i['value']))
+            for vitals_object in patient['vitals']:
+                if 'R' in vitals_object: 
+                    R.append(vitals_object['R'])
+                    R_datetime = datetime.strptime((vitals_object['datetime']),DATE_TIME_FORMAT)
+                    R_date.append(R_datetime)
 
-        for i in patient['vitals']:
-            if i['type'] == 'PN':
-                PN_date.append(i['dtf'])
-                PN.append(int(i['value']))
+            for vitals_object in patient['vitals']:
+                if 'P' in vitals_object: 
+                    P.append(vitals_object['P'])
 
-        for i in patient['vitals']:
-            if i['type'] == 'POX':
-                POX_date.append(i['dtf'])
-                POX.append(int(i['value']))
+                    P_datetime = datetime.strptime((vitals_object['datetime']),DATE_TIME_FORMAT)
+                    P_date.append(P_datetime)
+            
+            for vitals_object in patient['vitals']:
+                if 'POX' in vitals_object: 
+                    POX.append(vitals_object['POX'])
+                    POX_datetime = datetime.strptime((vitals_object['datetime']),DATE_TIME_FORMAT)
+                    POX_date.append( POX_datetime)
+            
+            for vitals_object in patient['vitals']:
+                if 'Wkg' in vitals_object: 
+                    Wkg.append(vitals_object['Wkg'])
+                    Wkg_datetime = datetime.strptime((vitals_object['datetime']),DATE_TIME_FORMAT)
+                    Wkg_date.append(Wkg_datetime)
+            
+            for vitals_object in patient['vitals']:
+                if 'BMI' in vitals_object: 
+                    BMI.append(vitals_object['BMI'])
+                    BMI_datetime = datetime.strptime((vitals_object['datetime']),DATE_TIME_FORMAT)
+                    BMI_date.append(BMI_datetime)
+            
+            for vitals_object in patient['vitals']:
+                if 'HCM' in vitals_object: 
+                    HCM.append(vitals_object['HCM'])
+                    HCM_datetime = datetime.strptime((vitals_object['datetime']),DATE_TIME_FORMAT)
+                    HCM_date.append(HCM_datetime)
+            
+            for vitals_object in patient['vitals']:
+                if 'PN' in vitals_object: 
+                    PN.append(vitals_object['PN'])
+                    PN_datetime = datetime.strptime((vitals_object['datetime']),DATE_TIME_FORMAT)
+                    PN_date.append(PN_datetime)
 
-        for i in patient['vitals']:
-            if i['type'] == 'BMI':
-                BMI_date.append(i['dtf'])
-                BMI.append(float(i['value']))
 
-        f = Figure(figsize=(10,5), dpi=100)
+            f = plt.figure(figsize=(15,7.5),dpi=100)
+            f.subplots_adjust(hspace=0.5)
 
-        a = f.add_subplot(331, title="Respiration", ylabel="resp/min")
-        a.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
-        plt.xticks(rotation=90)
-        a.plot(R_date, R)
+            a = f.add_subplot(331, title="Respiration", ylabel="resp/min")
+            a.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
+            plt.xticks(rotation=90)
+            a.plot(R_date, R)
 
-        c = f.add_subplot(333, title = "Pulse",xlabel="", ylabel="bpm")
-        c.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
-        plt.xticks(rotation=90)
-        c.plot(P_date, P)
+            b = f.add_subplot(332, title='BP (sys/dia)' ,xlabel="systolic")
+            b.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
+            plt.xticks(rotation=90)
+            b.plot(BP_date, sys, label ='systolic')
+            b.plot(BP_date, dia, label = 'diastolic')
 
-        d = f.add_subplot(334, title = "Pulse Oximetry",xlabel="", ylabel="%O2")
-        d.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
-        plt.xticks(rotation=90)
-        d.plot(POX_date, POX)
+            c = f.add_subplot(333, title = "Pulse",xlabel="", ylabel="bpm")
+            c.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
+            plt.xticks(rotation=90)
+            c.plot(P_date, P)
 
-        e = f.add_subplot(335, title = "Weight",xlabel="", ylabel="kg")
-        e.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
-        plt.xticks(rotation=90)
-        e.plot(WT_date, WT)
+            d = f.add_subplot(334, title = "Pulse Oximetry",xlabel="", ylabel="%O2")
+            d.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
+            plt.xticks(rotation=90)
+            d.plot(POX_date, POX)
 
-        g = f.add_subplot(336, title = "Body Mass Index",xlabel="", ylabel="%")
-        g.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
-        plt.xticks(rotation=90)
-        g.plot(BMI_date, BMI)
+            e = f.add_subplot(335, title = "Weight",xlabel="", ylabel="kg")
+            e.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
+            plt.xticks(rotation=90)
+            e.plot(Wkg_date, Wkg)
 
-        h = f.add_subplot(337, title = "Height",xlabel="", ylabel="CM")
-        h.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
-        plt.xticks(rotation=90)
-        h.plot(HT_date, HT)
+            g = f.add_subplot(337, title = "Height",xlabel="", ylabel="CM")
+            g.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
+            plt.xticks(rotation=90)
+            g.plot(HCM_date, HCM)
 
-        i = f.add_subplot(338, title = "Pain",xlabel="", ylabel="")
-        i.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
-        plt.xticks(rotation=90)
-        i.plot(PN_date, PN)
-
-        j = f.add_subplot(339, title = "Temperature",xlabel="", ylabel="°C")
-        j.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
-        plt.xticks(rotation=90)
-        j.plot(T_date, T)
-
+            h = f.add_subplot(338, title = "Pain",xlabel="", ylabel="")
+            h.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
+            plt.xticks(rotation=90)
+            h.plot(PN_date, PN)
 
         canvas = FigureCanvasTkAgg(f, self.frametest)
         canvas.get_tk_widget().pack(expand=True)
         canvas.draw()
 
-        # reports = ""
-
-        # reports += "<b><u>Administration Events</u></b>:<ul>"
-        # if len(patient['orders']['administration']) > 0:
-        #     for i in patient['orders']['administration']:
-        #         query_result=MiniEMRMongo.db.drug_formulary.find_one({'DIN': i['DIN']})
-        #         reports += '<li>Drug: {}, by {}, on {}</li>'.format(query_result['TRADENAME'], i['ProviderIEN'], i['Time'])
-        # else:
-        #     orders_meds = '<li>No administration events found</li>'
-        # reports += "</ul>"
-
-        # self.reportsHTML.set_html(reports)
-
+    def clear_vitalsUI(self):
+        print('clearing the vitals UI')
+        for x in self.tab5.winfo_children():
+            x.pack_forget()
 
     def clearPatientUI(self):
         setLabelImage(self.patientPhotoLabel,None)
         self.html_lable.set_html("")
         self.patientNameLabel.configure(text="")
         self.openImageFileButton.configure(state="disabled")
+        self.clear_vitalsUI()
 
     def openImageFileDialog(self):
         filename=filedialog.askopenfilename(initialdir= ".",title ="Open file",
@@ -352,7 +585,7 @@ class MainWindowFrame(tk.Frame):
         tab2 = ttk.Frame(tabControl)
         tabControl.add(tab2, text='Problems')
         self.problemsListbox = Listbox(tab2)
-        self.problemsListbox.pack(expand=True)
+        self.problemsListbox.pack(fill='both', expand=True)
 
         tab3 = ttk.Frame(tabControl)
         tabControl.add(tab3, text='Meds')
@@ -365,25 +598,21 @@ class MainWindowFrame(tk.Frame):
         self.ordersListbox.pack(fill="both", expand=True)
 
         tab5 = ttk.Frame(tabControl)
-        tabControl.add(tab5, text='Vitals')
+        tabControl.add(tab5, text='VitalsDisplay')
         self.frametest = tk.Frame(tab5)
+        self.frametest.config(width=1000,height=300)
         self.frametest.pack(fill="both", expand=True)
-
-        tab7 = ttk.Frame(tabControl)
-        tabControl.add(tab7, text='Vitals')
-        self.vitalsListbox = Listbox(tab7)
-        self.vitalsListbox.pack(fill="both", expand=True)
 
         tab6 = ttk.Frame(tabControl)
         tabControl.add(tab6, text='Reports')
         self.adminListbox = Listbox(tab6)
         self.adminListbox.pack(fill="both", expand=True)
 
-        # tab6 = ttk.Frame(tabControl)
-        # tabControl.add(tab6, text='Reports')
-        # self.reportsHTML = HTMLLabel(tab6)
-        # self.reportsHTML.pack(fill="both", expand=True)
-        # self.reportsHTML.fit_height()
+        tab7 = ttk.Frame(tabControl)
+        tabControl.add(tab7, text='VitalsReport')
+        self.summaryScrolledText = scrolledtext.ScrolledText(tab7)
+        self.summaryScrolledText.pack(fill="both", expand=True)
+
 
         tabControl.pack(expand=1, fill="both")
 
@@ -414,7 +643,30 @@ class MainWindow(tk.Tk):
 
         def EditPatientFn():
             self.editpatient_win=EditPatient(master=self)
-            self.editpatient_win.show()            
+            self.editpatient_win.show()
+
+        def recordVitalsTab():
+            def refreshPatientListAndUpdateUICallback():
+                PatientList.refresh()
+                self.main_frame.updatePatientUI()
+
+          #before creating the vitals record dialog, I must figure out current provider IEN
+            if NO_LOGON_TESTING: 
+                currentProviderIEN=DEFAULT_AUTH_IEN
+            else: 
+                currentProviderIEN=CurrentProvider.Record["IEN"]
+
+            vitals_win=VitalsWriteDialog(master=self,
+                patient=PatientList.current(), #current patient object
+                providerIEN=currentProviderIEN,  #logged on provider IEN
+                callback=refreshPatientListAndUpdateUICallback) #callback for refreshing patient data and updating UI 
+
+            vitals_win.show()       
+            
+
+        def vaccinateFn():
+            self.vaccine_win=OrderVaccine(master=self)
+            self.vaccine_win.show()       
 
         def logoutUser():
             self.title(APP_NAME+" (logged out)")
@@ -423,7 +675,7 @@ class MainWindow(tk.Tk):
             CurrentProvider.logout()
             PatientList.clearCurrentSelection()
             self.login_win.show()
-        
+
         #logout menu
         if not NO_LOGON_TESTING:
             fileMenu.add_command(label="Log out", underline=0, command=logoutUser)
@@ -433,19 +685,20 @@ class MainWindow(tk.Tk):
         def exitMenuSelected():
                 self.quit()
         #exit menu
-        fileMenu.add_command(label="Edit patient", command=EditPatientFn)
         fileMenu.add_command(label="Exit", command=exitMenuSelected)
         
         viewMenu = Menu(menuBar, tearoff=0)
         menuBar.add_cascade(label="View", menu=viewMenu)    
-        #patient select menu
-        viewMenu.add_command(label="Select patient", command=selectPatient)
         viewMenu.add_command(label="Add new patient", command=addNewPatientFn)
+        viewMenu.add_command(label="Edit patient", command=EditPatientFn)
+        viewMenu.add_command(label="Select patient", command=selectPatient)
 
+        #tools menu
         toolsMenu = Menu(menuBar, tearoff=0)
         menuBar.add_cascade(label="Tools", menu=toolsMenu)    
         toolsMenu.add_command(label="Change Password", command=changePassword)
-                
+        toolsMenu.add_command(label="Order Vaccine", command=vaccinateFn)                
+        toolsMenu.add_command(label="Record New Vitals", command=recordVitalsTab)            
         helpMenu = Menu(menuBar, tearoff=0)
         menuBar.add_cascade(label="Help", menu=helpMenu)    
 

@@ -1,0 +1,7 @@
+[
+    {"Control_Number":"248651", "Brand_Name":"Covishield ChAdOx1-S (recombinant) solution for injection", "Simple_Name":"Covishield"},
+    {"Control_Number":"246758", "Brand_Name":"Janssen COVID-19 Vaccine AD26.COV2.S (recombinant) suspension for injection", "Simple_Name":"Janssen"},
+    {"Control_Number":"244946", "Brand_Name":"COVID-19 Vaccine Moderna mRNA-1273 SARS-CoV-2 suspension for injection", "Simple_Name":"Moderna"},
+    {"Control_Number":"244906", "Brand_Name":"Pfizer-BioNTech COVID-19 Vaccine Tozinameran (mRNA vaccine, BNT162b2) suspension for injection", "Simple_Name":"Pfizer-BioNTech"},
+    {"Control_Number":"244627", "Brand_Name":"AstraZeneca COVID-19 Vaccine ChAdOx1-S (recombinant) solution for injection", "Simple_Name":"AstraZeneca"}
+]
