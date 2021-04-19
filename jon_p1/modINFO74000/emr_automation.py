@@ -19,7 +19,7 @@ from modINFO74000.barcode_reader import BarcodeReader
 
 
 class BarcodeScanner(BarcodeReader):
-  def __init__(self,parent,onMRNRead,onIENRead,onDINRead):
+  def __init__(self,parent,onMRNRead,onIENRead,onDINRead,onLOINRead):
     def onBarcodeDataRead(src,data):
       print("barcode data:",data, ' from source ',src)
       if str(data).startswith("MRN") and onMRNRead!=None:
@@ -28,6 +28,8 @@ class BarcodeScanner(BarcodeReader):
         onIENRead(str(data)[3:])
       elif str(data).startswith("DIN") and onDINRead!=None:
         onDINRead(str(data)[3:])
+      elif str(data)[-2] == "-" and onLOINRead!=None:
+        onLOINRead(str(data))
     BarcodeReader.__init__(self,parent,onBarcodeDataReady=onBarcodeDataRead)
 
 

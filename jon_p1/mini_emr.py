@@ -107,7 +107,9 @@ class MainWindowFrame(tk.Frame):
         if len(patient['orders']['tests']) > 0:
             for test in patient["orders"]["tests"]:
                 query_result=MiniEMRMongo.db.loinc.find_one({'LOINC_NUM': test['LOINC_NUM']})
+                print(query_result)
                 query_result_doc=MiniEMRMongo.db.employees.find_one({'IEN': test['ProviderIEN']})
+                print(query_result_doc)
                 self.ordersListbox.insert('end', query_result["Shortname"]+', '+query_result["LOINC_NUM"]+', by '+query_result_doc['full_name']+', on '+ test["result"]["Time"])
                 patientSummary += '<li>{}</li>'.format(query_result['Shortname'])
         else:
@@ -380,7 +382,7 @@ class MainWindow(tk.Tk):
             else:
                 if drug_order:
                     if messagebox.askokcancel(title="Confirm administration",message="{0}, dose:{1} is to be administered to {2}, MRN{3}".format(\
-                        drug_info['TRADENAME'],drug_order['dose'], patient['name'],patient['id'])):
+                        drug_info['TRADENAME'],drug_order['Freq'], patient['name'],patient['id'])):
                         #add administration record to patient record
                         from datetime import datetime
                         current_dt_iso=datetime.utcnow()
@@ -398,8 +400,39 @@ class MainWindow(tk.Tk):
                 #since database was updated, a patient list refresh and UI update are necessary
                 PatientList.refresh()
                 self.main_frame.updatePatientUI()
-       
-        self.bScanner=BarcodeScanner(self,onMRNBarcodeRead,onIENBarcodeRead,onDINBarcodeRead)
+
+        def onLOINBarcodeRead(LOINC):
+            print("test LOINC scanned:",LOINC)
+            patient=PatientList.current()
+
+            LOINC_info=MiniEMRMongo.db.loinc.find_one({"LOINC_NUM":LOINC})
+
+            if not LOINC_info:
+                messagebox.showerror(title="Test barcode scan error ",message="Test with LOINC: {0} not found in the database".format(LOINC))
+            else:
+                if LOINC_info:
+                    if messagebox.askokcancel(title="Confirm test delivery",message="{0}, has been delivered to {1}, MRN{2}".format(\
+                        LOINC_info['Shortname'], patient['name'], patient['id'])):
+                        #add administration record to patient record
+                        from datetime import datetime
+                        current_dt_iso=datetime.utcnow()
+                        test_admin_info = {
+                                "LOINC_NUM":    LOINC,
+                                "ProviderIEN":  CurrentProvider.Record['IEN'],
+                                "patientMRN":   str(patient['id']), 
+                                "result:":      {"value": "w", "Time": current_dt_iso.isoformat()+'Z'}
+                                }
+                        print(test_admin_info)
+                        PatientList.updateCurrentPatientTestRecord(test_admin_info)
+                else:
+                    messagebox.showwarning(title="Confirm test delivery",message="{0}, has been delivered to {1}, MRN{2}".format(\
+                        LOINC_info['Shortname'], patient['name'], patient['id']))
+
+                #since database was updated, a patient list refresh and UI update are necessary
+                PatientList.refresh()
+                self.main_frame.updatePatientUI()  
+
+        self.bScanner=BarcodeScanner(self,onMRNBarcodeRead,onIENBarcodeRead,onDINBarcodeRead,onLOINBarcodeRead)
     
     def __init__(self):
         tk.Tk.__init__(self,None)

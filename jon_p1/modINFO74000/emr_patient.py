@@ -80,6 +80,23 @@ class PatientList():
         else:
             print("patient record found:")
             PatientList.CurrentPatientIndex=PatientList.Patients.index(query_result)
+    @classmethod
+    def updateCurrentPatientDrugAdministrationRecord(cls,drug_order_index,drug_admin_info):
+        patient=PatientList.current()
+        if patient!=None:
+            #https://docs.mongodb.com/manual/reference/operator/update/positional/
+            update_result=MiniEMRMongo.db.patients.update_one(
+                    {'_id':patient['_id']},
+                    {'$push':{'orders.medications.{0}.admin'.format(drug_order_index):drug_admin_info}})
+
+    @classmethod
+    def updateCurrentPatientTestRecord(cls, test_admin_info):
+        patient=PatientList.current()
+        if patient!=None:
+            #https://docs.mongodb.com/manual/reference/operator/update/positional/
+            update_result=MiniEMRMongo.db.patients.update_one(
+                    {'_id':patient['_id']},
+                    {'$addToSet':{'orders.tests':test_admin_info}})
 
 class PatientSelectDialog(TopDialogWindow):
     def getPatientList(self):
@@ -100,14 +117,7 @@ class PatientSelectDialog(TopDialogWindow):
         self.okButton.pack()        
         self.getPatientList()
 
-    @classmethod
-    def updateCurrentPatientDrugAdministrationRecord(cls,drug_order_index,drug_admin_info):
-        patient=PatientList.current()
-        if patient!=None:
-            #https://docs.mongodb.com/manual/reference/operator/update/positional/
-            update_result=MiniEMRMongo.db.patients.update_one(
-                    {'_id':patient['_id']},
-                    {'$push':{'orders.medications.{0}.admin'.format(drug_order_index):drug_admin_info}})
+
 
 #add patient frame
 class addPatientUIFrame(tk.Frame):
