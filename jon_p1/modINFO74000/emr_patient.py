@@ -253,7 +253,7 @@ class AddNewPatient(TopDialogWindow):
                 "tests":[],
                 "administration":[]  
             },
-            "problems":[],
+            "problems":[{"ICD10code":""}],
             "vitals":[]
         }
 
@@ -272,3 +272,79 @@ class AddNewPatient(TopDialogWindow):
     def show(self):
         super(AddNewPatient, self).show()
         self.addPatientUI.clear()    
+
+class editPatientUIFrame(tk.Frame):
+    def createWidgets(self):
+        #patient details
+        self.allergies = tk.StringVar()    
+        self.diagnosis = tk.StringVar()
+
+        #label
+        AllergiesLabel=ttk.Label(self, text="Allergies (,):")
+        AllergiesLabel.grid(column=0, row=0, sticky='E')             
+        diagnosisLabel=ttk.Label(self, text="Diagnosis:")
+        diagnosisLabel.grid(column=0, row=1, sticky='E')
+
+        #text boxes
+        self.AllergiesTextBox = ttk.Entry(self,width=24, textvariable = self.allergies)
+        self.AllergiesTextBox.grid(column=1, row=0,padx=2,pady=2)
+        self.diagnosisTextBox = ttk.Entry(self,width=24, textvariable = self.diagnosis)
+        self.diagnosisTextBox.grid(column=1, row=1,padx=2,pady=2)
+
+        self.confirm_button = ttk.Button(self, width=16, text="Save Changes", command=self.master.edit_patient)
+        self.confirm_button.grid(column=1, row=2,padx=2,pady=2)
+
+    def clear(self):
+        #clear textboxes
+        self.AllergiesTextBox.delete(0,'end')
+        self.diagnosisTextBox.delete(0,'end')
+        self.AllergiesTextBox.focus()
+
+    def __init__(self, master=None):
+        tk.Frame.__init__(self, master)
+        self.pack()
+        self.createWidgets()
+
+#add patient function
+class EditPatient(TopDialogWindow):
+    def __init__(self, master=None):
+        TopDialogWindow.__init__(self, master)
+        self.EditPatientUI = editPatientUIFrame(self)
+        self.EditPatientUI.pack(side="top", fill="both", expand = True)
+        self.title("Edit Patient")
+        self.protocol("WM_DELETE_WINDOW", self.on_close)      
+        def enter_press(event):
+            self.edit_patient()
+        self.bind('<Return>', enter_press)#allows pressing Enter to logon
+
+    def edit_patient(self):
+        #getting variables from form
+        allergiesvar = []
+        for allergy in self.EditPatientUI.allergies.get().split(','):
+            allergiesvar.append(allergy)
+        diagnosisvar = self.EditPatientUI.diagnosis.get()
+
+        #parsing icd description           
+        query_result=MiniEMRMongo.db.icd10.find_one({"desc":diagnosisvar})
+        if (query_result==None) or len(allergiesvar) == 0:
+            messagebox.showerror("Update error","Please ensure all fields are filled out correctly.")     
+        else:
+            emptyList = []
+            objectItem = {'ICD10code':query_result['code']}
+            emptyList.append(objectItem)
+            patient_collection = MiniEMRMongo.db.patients
+            patient=PatientList.current()
+            if patient!=None:
+                patient_collection.update_one(                                     
+                    {'_id':patient['_id']},
+                    {'$set':{'allergies': allergiesvar,'problems':emptyList}})
+                self.hide()
+                messagebox.showinfo("Patient file updated","Patient has been successfully updated.")
+                PatientList.refresh()    
+
+    def on_close(self):
+        self.destroy()
+    
+    def show(self):
+        super(EditPatient, self).show()
+        self.EditPatientUI.clear()

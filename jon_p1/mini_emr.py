@@ -283,6 +283,10 @@ class MainWindow(tk.Tk):
             self.addpatient_win=AddNewPatient(master=self)
             self.addpatient_win.show()
 
+        def EditPatientFn():
+            self.editpatient_win=EditPatient(master=self)
+            self.editpatient_win.show()            
+
         def logoutUser():
             self.title(APP_NAME+" (logged out)")
             #may want to clear/reset all UIs elements
@@ -300,6 +304,7 @@ class MainWindow(tk.Tk):
         def exitMenuSelected():
                 self.quit()
         #exit menu
+        fileMenu.add_command(label="Edit patient", command=EditPatientFn)
         fileMenu.add_command(label="Exit", command=exitMenuSelected)
         
         viewMenu = Menu(menuBar, tearoff=0)
