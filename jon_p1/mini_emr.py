@@ -430,12 +430,13 @@ class MainWindow(tk.Tk):
             CurrentProvider.logout()
             PatientList.clearCurrentSelection()
             self.login_win.show()
-        
+
+        fileMenu.add_command(label="Edit patient", command=EditPatientFn)
+
         #logout menu
         if not NO_LOGON_TESTING:
             fileMenu.add_command(label="Log out", underline=0, command=logoutUser)
-            
-        fileMenu.add_command(label="Edit patient", command=EditPatientFn)
+
         fileMenu.add_separator()
 
         def exitMenuSelected():

@@ -202,7 +202,7 @@ class TestClass3_pymongo_healthcare_MiniEMR(unittest.TestCase):
                                         print('Loinc codes inserted: ',insert_result.inserted_ids)
 
         def test_case_vaccine(self):
-                vaccine_collection = self.db.loinc
+                vaccine_collection = self.db.vaccines
                 if vaccine_collection.find_one({})==None:
                         try:
                                 vaccineObjList=misc.LoadObjectFromJSONFile(PATH_TO_JSON_FILES+"/vaccine.json")
