@@ -492,7 +492,7 @@ class MainWindowFrame(tk.Frame):
                     PN_date.append(PN_datetime)
 
 
-            f = Figure(figsize=(10,5),dpi=100)
+            f = plt.figure(figsize=(15,7.5),dpi=100)
             f.subplots_adjust(hspace=0.5)
 
             a = f.add_subplot(331, title="Respiration", ylabel="resp/min")
@@ -502,6 +502,7 @@ class MainWindowFrame(tk.Frame):
 
             b = f.add_subplot(332, title='BP (sys/dia)' ,xlabel="systolic")
             b.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
+            plt.xticks(rotation=90)
             b.plot(BP_date, sys, label ='systolic')
             b.plot(BP_date, dia, label = 'diastolic')
 
@@ -512,23 +513,23 @@ class MainWindowFrame(tk.Frame):
 
             d = f.add_subplot(334, title = "Pulse Oximetry",xlabel="", ylabel="%O2")
             d.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
+            plt.xticks(rotation=90)
             d.plot(POX_date, POX)
 
             e = f.add_subplot(335, title = "Weight",xlabel="", ylabel="kg")
             e.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
+            plt.xticks(rotation=90)
             e.plot(Wkg_date, Wkg)
 
-            g = f.add_subplot(336, title = "Body Mass Index",xlabel="", ylabel="%")
+            g = f.add_subplot(337, title = "Height",xlabel="", ylabel="CM")
             g.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
-            g.plot(BMI_date, BMI)
+            plt.xticks(rotation=90)
+            g.plot(HCM_date, HCM)
 
-            h = f.add_subplot(337, title = "Height",xlabel="", ylabel="CM")
+            h = f.add_subplot(338, title = "Pain",xlabel="", ylabel="")
             h.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
-            h.plot(HCM_date, HCM)
-
-            i = f.add_subplot(338, title = "Pain",xlabel="", ylabel="")
-            i.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
-            i.plot(PN_date, PN)
+            plt.xticks(rotation=90)
+            h.plot(PN_date, PN)
 
         canvas = FigureCanvasTkAgg(f, self.frametest)
         canvas.get_tk_widget().pack(expand=True)
