@@ -33,7 +33,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 import matplotlib.dates as md
-DB_DATE_TIME_FORMAT="%Y-%m-%d"
+DATE_TIME_FORMAT="%Y-%m-%dT%H:%M:%S.%fZ"
 
 class PatientList():
     CurrentPatientIndex=None
@@ -456,8 +456,19 @@ class OrderVaccine(TopDialogWindow):
         super(OrderVaccine, self).show()
         self.VaccinateUI.clear()
 
+class VitalsGraphUIFrame(tk.Frame):
+    def __init__(self, master=None):
+        tk.Frame.__init__(self, master)
+        self.pack()
+
 class VitalsGraphing(TopDialogWindow):
-    def vitalsGraph(self):
+    def __init__(self, master=None):
+        TopDialogWindow.__init__(self, master)
+        self.VitalsUI = VitalsGraphUIFrame(self)
+        self.VitalsUI.pack(side="top", fill="both", expand = True)
+        self.title("Vitals Graph")
+        self.protocol("WM_DELETE_WINDOW", self.on_close)      
+        patient = PatientList.current()
         
         sys = []
         dia = []
@@ -569,6 +580,12 @@ class VitalsGraphing(TopDialogWindow):
         plt.xticks(rotation=90)
         h.plot(PN_date, PN)
 
-        canvas = FigureCanvasTkAgg(f, self.frametest)
+        canvas = FigureCanvasTkAgg(f, self.VitalsUI)
         canvas.get_tk_widget().pack(expand=True)
         canvas.show()
+
+    def on_close(self):
+        self.destroy()
+
+    def show(self):
+        super(VitalsGraphing, self).show()
