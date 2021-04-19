@@ -373,9 +373,9 @@ class VaccineUIFrame(tk.Frame):
         vaccineDoseLabel=ttk.Label(self, text="Vaccine Dose:")
         vaccineDoseLabel.grid(column=0, row=1, sticky='E')
         vaccineLocationLabel=ttk.Label(self, text="Hospital Name:")
-        vaccineLocationLabel.grid(column=0, row=1, sticky='E')
+        vaccineLocationLabel.grid(column=0, row=2, sticky='E')
         vaccineAdverseLabel=ttk.Label(self, text="Adverse (y/n):")
-        vaccineAdverseLabel.grid(column=0, row=1, sticky='E')
+        vaccineAdverseLabel.grid(column=0, row=3, sticky='E')
 
         #text boxes
         self.vaccineTypeTextBox = ttk.Entry(self,width=24, textvariable = self.vaccineType)
@@ -383,7 +383,7 @@ class VaccineUIFrame(tk.Frame):
         self.vaccineDoseTextBox = ttk.Entry(self,width=24, textvariable = self.vaccineDose)
         self.vaccineDoseTextBox.grid(column=1, row=1,padx=2,pady=2)
         self.vaccineLocationTextBox = ttk.Entry(self,width=24, textvariable = self.vaccineLocation)
-        self.vaccineLocation.grid(column=1, row=2,padx=2,pady=2)
+        self.vaccineLocationTextBox.grid(column=1, row=2,padx=2,pady=2)
         self.vaccineAdverseTextBox = ttk.Entry(self,width=24, textvariable = self.vaccineAdverse)
         self.vaccineAdverseTextBox.grid(column=1, row=3,padx=2,pady=2)
 
@@ -394,7 +394,7 @@ class VaccineUIFrame(tk.Frame):
         #clear textboxes
         self.vaccineTypeTextBox.delete(0,'end')
         self.vaccineDoseTextBox.delete(0,'end')
-        self.vaccineLocation.delete(0,'end')
+        self.vaccineLocationTextBox.delete(0,'end')
         self.vaccineAdverseTextBox.delete(0,'end')
         self.vaccineTypeTextBox.focus()
 
@@ -407,7 +407,7 @@ class VaccineUIFrame(tk.Frame):
 class OrderVaccine(TopDialogWindow):
     def __init__(self, master=None):
         TopDialogWindow.__init__(self, master)
-        self.VaccinateUI = editPatientUIFrame(self)
+        self.VaccinateUI = VaccineUIFrame(self)
         self.VaccinateUI.pack(side="top", fill="both", expand = True)
         self.title("Order Vaccine")
         self.protocol("WM_DELETE_WINDOW", self.on_close)      
@@ -423,21 +423,22 @@ class OrderVaccine(TopDialogWindow):
         vaccineAdversevar = self.VaccinateUI.vaccineAdverse.get()
 
         #parsing text description           
-        query_result=MiniEMRMongo.db.icd10.find_one({"desc":diagnosisvar})
-        if (query_result==None) or len(allergiesvar) == 0:
-            messagebox.showerror("Update error","Please ensure all fields are filled out correctly.")     
+        query_result=MiniEMRMongo.db.vaccines.find_one({"Simple_Name":vaccineTypevar})
+        if (query_result==None) or len(vaccineTypevar) == 0 or len(vaccineDosevar) == 0 or len(vaccineLocationvar) == 0 or len(vaccineAdversevar) == 0:
+            messagebox.showerror("Insert error","Please ensure all fields are filled out correctly.")     
         else:
-            emptyList = []
-            objectItem = {'ICD10code':query_result['code']}
-            emptyList.append(objectItem)
+            date_admin = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+            admin_event = []
+            event_details = {"vaccine_id":query_result['Control_Number'], "date_administered":date_admin, "location":vaccineLocationvar, "dose":vaccineDosevar, "adverse":vaccineAdversevar}
+            admin_event.append(event_details)
             patient_collection = MiniEMRMongo.db.patients
             patient=PatientList.current()
             if patient!=None:
                 patient_collection.update_one(                                     
                     {'_id':patient['_id']},
-                    {'$set':{'allergies': allergiesvar,'problems':emptyList}})
+                    {'$set':{'vaccine_event': admin_event}})
                 self.hide()
-                messagebox.showinfo("Patient file updated","Patient has been successfully updated.")
+                messagebox.showinfo("Patient file updated","Vaccine has been successfully ordered.")
                 PatientList.refresh()    
 
     def on_close(self):
