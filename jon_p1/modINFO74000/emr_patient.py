@@ -87,7 +87,8 @@ class PatientList():
             #https://docs.mongodb.com/manual/reference/operator/update/positional/
             update_result=MiniEMRMongo.db.patients.update_one(
                     {'_id':patient['_id']},
-                    {'$push':{'orders.medications.{0}.admin'.format(drug_order_index):drug_admin_info}})
+                    {'$addToSet':{'orders.administration':drug_admin_info}})
+                    # {'$push':{'orders.medications.{0}.admin'.format(drug_order_index):drug_admin_info}})
 
     @classmethod
     def updateCurrentPatientTestRecord(cls, test_admin_info):

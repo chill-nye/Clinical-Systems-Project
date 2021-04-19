@@ -109,10 +109,7 @@ class MainWindowFrame(tk.Frame):
         if len(patient['orders']['tests']) > 0:
             for test in patient["orders"]["tests"]:
                 query_result=MiniEMRMongo.db.loinc.find_one({'LOINC_NUM': test['LOINC_NUM']})
-                print("query_result" + str(query_result))
                 query_result_doc=MiniEMRMongo.db.employees.find_one({'IEN': test['ProviderIEN']})
-                print("query_result_doc" + str(query_result_doc))
-                print("query_result-test-" + str(test["result"]["Time"]))
                 self.ordersListbox.insert('end', query_result["Shortname"]+', '+query_result["LOINC_NUM"]+', by '+query_result_doc['full_name']+', on '+ test["result"]["Time"])
                 patientSummary += '<li>{}</li>'.format(query_result['Shortname'])
         else:
@@ -483,6 +480,7 @@ class MainWindow(tk.Tk):
             if CurrentProvider.Record!=None:
                 if IEN==CurrentProvider.Record['IEN']:
                     messagebox.showinfo( APP_NAME,'Employee badge scanned as '+CurrentProvider.Record['full_name'])
+                    logoutUser()
                 else:
                     logoutUser()
             #lookup username - some already implemented this as getProviderByIEN()
@@ -517,9 +515,10 @@ class MainWindow(tk.Tk):
                         from datetime import datetime
                         current_dt_iso=datetime.utcnow()
                         drug_admin_info= {
-                                "date_time":    current_dt_iso.isoformat()+'Z',
-                                "notes":"",
-                                "AuthIEN":      CurrentProvider.Record['IEN']
+                                "DIN":          DIN,
+                                "ProviderIEN":  CurrentProvider.Record['IEN'],
+                                "patientMRN":   patient["id"],
+                                "Time":         current_dt_iso.isoformat()+'Z'
                                 }
                         drug_order_index=patient['orders']['medications'].index(drug_order)
                         PatientList.updateCurrentPatientDrugAdministrationRecord(drug_order_index,drug_admin_info)
@@ -541,7 +540,7 @@ class MainWindow(tk.Tk):
                 messagebox.showerror(title="Test barcode scan error ",message="Test with LOINC: {0} not found in the database".format(LOINC))
             else:
                 if LOINC_info:
-                    if messagebox.askokcancel(title="Confirm test delivery",message="{0}, has been delivered to {1}, MRN{2}".format(\
+                    if messagebox.askokcancel(title="Confirm test order",message="{0}, has been ordered to {1}, MRN{2}".format(\
                         LOINC_info['Shortname'], patient['name'], patient['id'])):
                         #add administration record to patient record
                         from datetime import datetime
@@ -550,12 +549,12 @@ class MainWindow(tk.Tk):
                                 "LOINC_NUM":    LOINC,
                                 "ProviderIEN":  CurrentProvider.Record['IEN'],
                                 "patientMRN":   str(patient['id']), 
-                                "result":      {"value": "w", "Time": current_dt_iso.isoformat()+'Z'}
+                                "result":      {"value": "Positive", "Time": current_dt_iso.isoformat()+'Z'}
                                 }
                         print(test_admin_info)
                         PatientList.updateCurrentPatientTestRecord(test_admin_info)
                 else:
-                    messagebox.showwarning(title="Confirm test delivery",message="{0}, has been delivered to {1}, MRN{2}".format(\
+                    messagebox.showwarning(title="Confirm test order",message="{0}, has been ordered to {1}, MRN{2}".format(\
                         LOINC_info['Shortname'], patient['name'], patient['id']))
 
                 #since database was updated, a patient list refresh and UI update are necessary
