@@ -39,7 +39,7 @@ class VitalsWriteDialog(TopDialogWindow):
 
   def __init__(self,master=None,patient=None,providerIEN=None,callback=None):
 
-    TopDialogWindow.__init__(self, master), "Recording vitals"   
+    TopDialogWindow.__init__(self, master)   
 
     #vitalsReadVars holds the tk.*Var objects of various types in a list
     self.vitalsReadVars=[]

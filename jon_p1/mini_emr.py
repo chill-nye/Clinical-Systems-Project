@@ -44,7 +44,7 @@ import matplotlib.dates as md
 DB_DATE_TIME_FORMAT="%Y-%m-%d"
 
 class MainWindowFrame(tk.Frame):
-    
+        
     def updatePatientUI(self):
         patient=PatientList.current()
         patientSummary = ""
@@ -130,6 +130,21 @@ class MainWindowFrame(tk.Frame):
                     self.problemsListbox.insert('end',query_result["desc"])                    
                     patientSummary+="<li>"+query_result["desc"]+"</li>"        
 
+        #vitals + populate Vitals tab
+        # patientSummary+="<br/><b><u>Vitals</u></b>:<ul>"
+        # self.vitalsListbox.delete(0,self.vitalsListbox.size()-1)
+        # if len(patient['vitals']) > 0:
+        #     for i in patient['vitals']:
+        #         if i["type"] == "BP":
+        #             self.vitalsListbox.insert('end',i["type"]+i["value"]["sys"]+i["value"]["dia"])
+        #             patientSummary+= str(i["type"][-1]+i["value"]["sys"][-1]+i["value"]["dia"][-1])
+        #         else:
+        #             self.vitalsListbox.insert('end',i["type"]+i["value"])
+        #             patientSummary+= str(i["type"]+i["value"][-1])
+        # else:
+        #     orders_labs = '<li>No current labs found</li>'
+        # patientSummary += "</ul>"
+
         self.updateVitalsUI()        
         patientSummary+= 'Last Vitals Values: <ul>' 
         LastMeasuredVitalStr=""
@@ -139,6 +154,8 @@ class MainWindowFrame(tk.Frame):
                 idx=VITAL_TYPE_LIST.index(vt)
                 LastVal = self.vital_data_series[vt][serieslength-1]
                 LastMeasuredVitalStr += "<li>" + VITAL_TYPE_LABELS[idx]+ " " +str(LastVal["value"])+" measured on: " + LastVal["datetime"].strftime("%D-%H:%m:%S") + "</li>"
+                
+        
         patientSummary+= LastMeasuredVitalStr + '<ul>'
 
         #administration + popoulate Report tab
@@ -179,6 +196,10 @@ class MainWindowFrame(tk.Frame):
         except:
             vaccineData += '<li>No vaccination data found</li>'
         self.vaccine_label.set_html(vaccineData)
+        #list meds
+        # self.medsListbox.delete(0,self.medsListbox.size()-1)
+        # for med in patient["orders"]["medications"]:
+        #     self.medsListbox.insert('end', med["TRADENAME"]+', '+med["DIN"])
 
     def updateVitalsUI(self):
         patient=PatientList.current()        
@@ -253,15 +274,14 @@ class MainWindowFrame(tk.Frame):
 
             Wkg = []
             Wkg_date= []
-            
-            BMI=[]
-            BMI_date =[]
-            
+                        
             HCM=[]
             HCM_date = []
             
             PN=[]
             PN_date = []
+
+
 
             for vitals_object in patient['vitals']:
                 if 'BP' in vitals_object: 
@@ -270,37 +290,38 @@ class MainWindowFrame(tk.Frame):
                     BP_datetime = datetime.strptime((vitals_object['datetime']),DATE_TIME_FORMAT)
                     BP_date.append(BP_datetime)
 
+            for vitals_object in patient['vitals']:
                 if 'R' in vitals_object: 
                     R.append(vitals_object['R'])
                     R_datetime = datetime.strptime((vitals_object['datetime']),DATE_TIME_FORMAT)
                     R_date.append(R_datetime)
 
+            for vitals_object in patient['vitals']:
                 if 'P' in vitals_object: 
                     P.append(vitals_object['P'])
 
                     P_datetime = datetime.strptime((vitals_object['datetime']),DATE_TIME_FORMAT)
                     P_date.append(P_datetime)
             
+            for vitals_object in patient['vitals']:
                 if 'POX' in vitals_object: 
                     POX.append(vitals_object['POX'])
                     POX_datetime = datetime.strptime((vitals_object['datetime']),DATE_TIME_FORMAT)
                     POX_date.append( POX_datetime)
             
+            for vitals_object in patient['vitals']:
                 if 'Wkg' in vitals_object: 
                     Wkg.append(vitals_object['Wkg'])
                     Wkg_datetime = datetime.strptime((vitals_object['datetime']),DATE_TIME_FORMAT)
                     Wkg_date.append(Wkg_datetime)
-            
-                if 'BMI' in vitals_object: 
-                    BMI.append(vitals_object['BMI'])
-                    BMI_datetime = datetime.strptime((vitals_object['datetime']),DATE_TIME_FORMAT)
-                    BMI_date.append(BMI_datetime)
-            
+                        
+            for vitals_object in patient['vitals']:
                 if 'HCM' in vitals_object: 
                     HCM.append(vitals_object['HCM'])
                     HCM_datetime = datetime.strptime((vitals_object['datetime']),DATE_TIME_FORMAT)
                     HCM_date.append(HCM_datetime)
             
+            for vitals_object in patient['vitals']:
                 if 'PN' in vitals_object: 
                     PN.append(vitals_object['PN'])
                     PN_datetime = datetime.strptime((vitals_object['datetime']),DATE_TIME_FORMAT)
@@ -308,7 +329,7 @@ class MainWindowFrame(tk.Frame):
 
 
             f = plt.figure(figsize=(15,7.5),dpi=100)
-            f.subplots_adjust(hspace=1.5)
+            f.subplots_adjust(hspace=0.5)
 
             a = f.add_subplot(331, title="Respiration", ylabel="resp/min")
             a.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
