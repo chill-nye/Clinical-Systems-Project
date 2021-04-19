@@ -107,9 +107,10 @@ class MainWindowFrame(tk.Frame):
         if len(patient['orders']['tests']) > 0:
             for test in patient["orders"]["tests"]:
                 query_result=MiniEMRMongo.db.loinc.find_one({'LOINC_NUM': test['LOINC_NUM']})
-                print(query_result)
+                print("query_result" + str(query_result))
                 query_result_doc=MiniEMRMongo.db.employees.find_one({'IEN': test['ProviderIEN']})
-                print(query_result_doc)
+                print("query_result_doc" + str(query_result_doc))
+                print("query_result-test-" + str(test["result"]["Time"]))
                 self.ordersListbox.insert('end', query_result["Shortname"]+', '+query_result["LOINC_NUM"]+', by '+query_result_doc['full_name']+', on '+ test["result"]["Time"])
                 patientSummary += '<li>{}</li>'.format(query_result['Shortname'])
         else:
@@ -420,7 +421,7 @@ class MainWindow(tk.Tk):
                                 "LOINC_NUM":    LOINC,
                                 "ProviderIEN":  CurrentProvider.Record['IEN'],
                                 "patientMRN":   str(patient['id']), 
-                                "result:":      {"value": "w", "Time": current_dt_iso.isoformat()+'Z'}
+                                "result":      {"value": "w", "Time": current_dt_iso.isoformat()+'Z'}
                                 }
                         print(test_admin_info)
                         PatientList.updateCurrentPatientTestRecord(test_admin_info)
