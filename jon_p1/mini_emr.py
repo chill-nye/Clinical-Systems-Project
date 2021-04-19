@@ -678,8 +678,6 @@ class MainWindow(tk.Tk):
             PatientList.clearCurrentSelection()
             self.login_win.show()
 
-        fileMenu.add_command(label="Edit patient", command=EditPatientFn)
-
         #logout menu
         if not NO_LOGON_TESTING:
             fileMenu.add_command(label="Log out", underline=0, command=logoutUser)
@@ -694,6 +692,7 @@ class MainWindow(tk.Tk):
         viewMenu = Menu(menuBar, tearoff=0)
         menuBar.add_cascade(label="View", menu=viewMenu)    
         viewMenu.add_command(label="Add new patient", command=addNewPatientFn)
+        viewMenu.add_command(label="Edit patient", command=EditPatientFn)
         viewMenu.add_command(label="Select patient", command=selectPatient)
 
         #tools menu
