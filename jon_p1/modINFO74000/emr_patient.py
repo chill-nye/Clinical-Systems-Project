@@ -262,6 +262,7 @@ class AddNewPatient(TopDialogWindow):
             patient_collection.insert_one(patient_data)
             self.hide()
             messagebox.showinfo("New Patient Added","Patient has been successfully added.")
+            PatientList.refresh()
         else:
             messagebox.showerror("Insert error","Please ensure all fields are filled out correctly.")         
 
