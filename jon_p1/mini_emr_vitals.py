@@ -40,7 +40,7 @@ class MainWindow(tk.Tk):
       #list all vitals by recording date      
       for vitals_object in patient['vitals']:   
         #dealing with datetime and author metadata
-        record_date_time=datetime.strptime((vitals_object['date_time']),DATE_TIME_FORMAT)
+        record_date_time=datetime.strptime((vitals_object['datetime']),DATE_TIME_FORMAT)
         
         # using a list comprehension to filter only the vital types available in the object
         # note that the object contains the date time stamp and author field (they are NOT vital type data)        
@@ -51,7 +51,7 @@ class MainWindow(tk.Tk):
           #initializes the vital data series dictionary  if needed
           if not vt in vital_data_series: vital_data_series[vt]=[] 
           #adds the vital type recording to the appropriate data series
-          vital_data_series[vt].append({"date_time":record_date_time,"value":vitals_object[vt]})
+          vital_data_series[vt].append({"datetime":record_date_time,"value":vitals_object[vt]})
           #adds vital record data to the output UI
           self.summaryScrolledText.insert('end',VITAL_TYPE_LABELS[idx]+':'+str(vitals_object[vt])+'\n')
         
@@ -72,7 +72,7 @@ class MainWindow(tk.Tk):
       for vt in vital_data_series: #this is better, no more "if" statement needed!
         strVitalSeries=""
         for value in vital_data_series[vt]: 
-          strVitalSeries+=value["date_time"].strftime(DATE_TIME_FORMAT)+", value:"+str(value["value"])+'\n'          
+          strVitalSeries+=value["datetime"].strftime(DATE_TIME_FORMAT)+", value:"+str(value["value"])+'\n'          
         self.summaryScrolledText.insert('end',vt+'\n'+strVitalSeries+'\n')
 
   def createWidgets(self):
@@ -135,13 +135,18 @@ class MainWindow(tk.Tk):
 
         if not NO_LOGON_TESTING:
           self.login_win=LoginWindowDialog(master=self)
-          self.login_win.show()    
+          self.login_win.show()
+ 
 
        
 
 APP_NAME+=' (Vitals v2)' 
 main_win = MainWindow()
 #connect to mongodb just before main loop
+if NO_LOGON_TESTING:
+    #must have default provider, when no logon testing, or drug admin and vital recording will crash
+    CurrentProvider.Record=MiniEMRMongo.db.employees.find_one({'IEN':'055'})
+
 MiniEMRMongo.connect()
 PatientList.refresh()
 main_win.mainloop()

@@ -39,7 +39,7 @@ class VitalsWriteDialog(TopDialogWindow):
 
   def __init__(self,master=None,patient=None,providerIEN=None,callback=None):
 
-    TopDialogWindow.__init__(self, master,"Recording vitals")   
+    TopDialogWindow.__init__(self, master)   
 
     #vitalsReadVars holds the tk.*Var objects of various types in a list
     self.vitalsReadVars=[]
@@ -81,7 +81,7 @@ class VitalsWriteDialog(TopDialogWindow):
       if len(vitals_object.keys())>0:
         #at least one vital type has data that needs saving
         vitals_object["AuthIEN"]=providerIEN
-        vitals_object["date_time"]=datetime.utcnow().isoformat()+'Z'
+        vitals_object["datetime"]=datetime.utcnow().isoformat()+'Z'
         #updates current patient record by pushing the vitals object into the vitals array/list         
         #patient=PatientList.current()
         if not patient==None:
