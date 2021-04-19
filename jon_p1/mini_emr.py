@@ -164,6 +164,21 @@ class MainWindowFrame(tk.Frame):
             setLabelImage(self.patientPhotoLabel,patient["photo"])
         else: setLabelImage(self.patientPhotoLabel,None)
 
+        vaccineData = ""
+        vaccineData += '<b><u>Vaccination Information</u></b>:<ul>'
+        try:
+            if len(patient['vaccine_event']) > 0:
+                for i in patient['vaccine_event']:
+                    vaccineData += "Event Details:<ul>"
+                    vaccineData += "<li>Vaccination Date: {}</li>".format(i['date_administered'])
+                    vaccine_name = MiniEMRMongo.db.vaccines.find_one({"Control_Number":i['vaccine_id']})
+                    vaccineData += "<li>Vaccine Type: {}</li>".format(vaccine_name['Brand_Name'])
+                    vaccineData += "<li>Location: {}</li>".format(i['location'])
+                    vaccineData += "<li>Dose: {}</li>".format(i['dose'])
+                    vaccineData += "<li>Adverse?: {}</li>".format(i['adverse'])
+        except:
+            vaccineData += '<li>No vaccination data found</li>'
+        self.vaccine_label.set_html(vaccineData)
 
     def updateVitalsUI(self):
         patient=PatientList.current()        
@@ -416,6 +431,11 @@ class MainWindowFrame(tk.Frame):
         self.summaryScrolledText = scrolledtext.ScrolledText(tab7)
         self.summaryScrolledText.pack(fill="both", expand=True)
 
+        tab8 = ttk.Frame(tabControl)
+        tabControl.add(tab8, text='Vaccination Record')
+        self.vaccine_label = HTMLLabel(tab8)
+        self.vaccine_label.pack(fill="both", expand=True)
+        self.vaccine_label.fit_height()
 
         tabControl.pack(expand=1, fill="both")
 

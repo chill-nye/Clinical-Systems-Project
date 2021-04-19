@@ -369,9 +369,9 @@ class VaccineUIFrame(tk.Frame):
         self.vaccineAdverse = tk.StringVar()
 
         #label
-        vaccineTypeLabel=ttk.Label(self, text="Vaccine Type:")
+        vaccineTypeLabel=ttk.Label(self, text="Vaccine Type (i.e. Moderna):")
         vaccineTypeLabel.grid(column=0, row=0, sticky='E')             
-        vaccineDoseLabel=ttk.Label(self, text="Vaccine Dose:")
+        vaccineDoseLabel=ttk.Label(self, text="Vaccine Dose (1/2):")
         vaccineDoseLabel.grid(column=0, row=1, sticky='E')
         vaccineLocationLabel=ttk.Label(self, text="Hospital Name:")
         vaccineLocationLabel.grid(column=0, row=2, sticky='E')
