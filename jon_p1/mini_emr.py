@@ -44,175 +44,7 @@ import matplotlib.dates as md
 DB_DATE_TIME_FORMAT="%Y-%m-%d"
 
 class MainWindowFrame(tk.Frame):
-    
-    def updateVitalsUI(self):
-        patient=PatientList.current()        
-        self.summaryScrolledText.replace('1.0','end',patient["name"]+"\n")
-        #Moved this from beneath the if statement
-        self.vital_data_series={} #dictionary for compiling all vital measurement by type, in a data series  
-        if 'vitals' in patient:
-         
-
-            self.summaryScrolledText.insert('end',"List vitals data by date/time:\n")
-            #list all vitals by recording date      
-            for vitals_object in patient['vitals']:   
-                #dealing with datetime and author metadata
-                record_date_time=datetime.strptime((vitals_object['datetime']),DATE_TIME_FORMAT)
-            
-                # using a list comprehension to filter only the vital types available in the object
-                # note that the object contains the date time stamp and author field (they are NOT vital type data)        
-                recorded_vital_types=[vt for vt in vitals_object if vt in VITAL_TYPE_LIST]
-            
-                for vt in recorded_vital_types:
-                    idx=VITAL_TYPE_LIST.index(vt)
-                    #initializes the vital data series dictionary  if needed
-                    if not vt in self.vital_data_series: self.vital_data_series[vt]=[] 
-                    #adds the vital type recording to the appropriate data series
-                    self.vital_data_series[vt].append({"datetime":record_date_time,"value":vitals_object[vt]})
-                    #adds vital record data to the output UI
-                    self.summaryScrolledText.insert('end',VITAL_TYPE_LABELS[idx]+':'+str(vitals_object[vt])+'\n')
-            
-            #adds author and date time to the output UI
-                self.summaryScrolledText.insert('end','Recorded by IEN='+str(vitals_object["AuthIEN"])+' on: '
-                    +record_date_time.strftime(DATE_TIME_FORMAT)
-                    +'\n------------------------------------\n')
-
-            self.summaryScrolledText.insert('end',"List vitals data by type:\n")        
-            #lists all vitals by vital type (data series)
-            
-            #for vt in VITAL_TYPE_LIST: <-- this created a bug
-            #BUG description: iterating by all types in VITAL_TYPE_LIST was a bug
-            #if a certain vital type was not in vital_data_series the code would fail
-            #the fix was using if vt in vital_data_series, or better yet,
-            #just iterate through the vital types that ARE in the vital_data_series object
-
-            for vt in self.vital_data_series: #this is better, no more "if" statement needed!
-                strVitalSeries=""
-                for value in self.vital_data_series[vt]: 
-                    strVitalSeries+=value["datetime"].strftime(DATE_TIME_FORMAT)+", value:"+str(value["value"])+'\n'          
-                self.summaryScrolledText.insert('end',vt+'\n'+strVitalSeries+'\n')
-
-            #here we list the last measured vitals. 
-            LastMeasuredVitalStr=""
-            for vt in self.vital_data_series:
-                serieslength = len(self.vital_data_series[vt])
-                if serieslength >0:
-                    idx=VITAL_TYPE_LIST.index(vt)
-                    LastVal = self.vital_data_series[vt][serieslength-1]
-                    LastMeasuredVitalStr += VITAL_TYPE_LABELS[idx]+ " " +str(LastVal["value"])+" measured on: " + LastVal["datetime"].strftime("%Y%M%D%H%M%S") + "\n"
-            self.summaryScrolledText.insert('end',"Last Measured Vitals:\n" + LastMeasuredVitalStr)
-
-        sys = [] 
-        dia = []
-            
-        R = []
-        R_date = []
-            
-        P = []
-        P_date = []
-
-        POX= []
-        POX_date= []
-
-        WT = []
-        WT_date= []
-            
-        BMI=[]
-        BMI_date =[]
-            
-        HT=[]
-        HT_date = []
-            
-        PN=[]
-        PN_date = []
-            
-        T=[]
-        T_date= []
-
-        for i in patient['vitals']:
-            if i['type'] == 'BR':
-                R_date.append(i['datetime'])
-                R.append(int(i['value']))
-
-        for i in patient['vitals']:
-            if i['type'] == 'BR':
-                P_date.append(i['datetime'])
-                P.append(int(i['value']))
-
-        for i in patient['vitals']:
-            if i['type'] == 'R':
-                R_date.append(i['datetime'])
-                R.append(int(i['value']))
-
-        for i in patient['vitals']:
-            if i['type'] == 'P':
-                P_date.append(i['datetime'])
-                P.append(int(i['value']))
-
-        for i in patient['vitals']:
-            if i['type'] == 'HCM':
-                HT_date.append(i['datetime'])
-                HT.append(int(i['value']))
-
-        for i in patient['vitals']:
-            if i['type'] == 'Wkg':
-                WT_date.append(i['datetime'])
-                WT.append(int(i['value']))
-
-        for i in patient['vitals']:
-            if i['type'] == 'PN':
-                PN_date.append(i['datetime'])
-                PN.append(int(i['value']))
-
-        for i in patient['vitals']:
-            if i['type'] == 'POX':
-                POX_date.append(i['datetime'])
-                POX.append(int(i['value']))
-
-        f = Figure(figsize=(10,5), dpi=100)
-
-        a = f.add_subplot(331, title="Respiration", ylabel="resp/min")
-        a.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
-        a.plt.xticks(rotation=90)
-        a.plot(R_date, R)
-
-        c = f.add_subplot(333, title = "Pulse",xlabel="", ylabel="bpm")
-        c.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
-        c.plt.xticks(rotation=90)
-        c.plot(P_date, P)
-
-        d = f.add_subplot(334, title = "Pulse Oximetry",xlabel="", ylabel="%O2")
-        d.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
-        d.plt.xticks(rotation=90)
-        d.plot(POX_date, POX)
-
-        e = f.add_subplot(335, title = "Weight",xlabel="", ylabel="kg")
-        e.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
-        e.plt.xticks(rotation=90)
-        e.plot(WT_date, WT)
-
-        g = f.add_subplot(337, title = "Height",xlabel="", ylabel="CM")
-        g.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
-        g.plt.xticks(rotation=90)
-        g.plot(HT_date, HT)
-
-        h = f.add_subplot(338, title = "Pain",xlabel="", ylabel="")
-        h.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
-        h.plt.xticks(rotation=90)
-        h.plot(PN_date, PN)
-
-
-        canvas = FigureCanvasTkAgg(f, self.frametest)
-        canvas.get_tk_widget().pack(expand=True)
-        canvas.draw()
-
-    def clear_vitalsUI(self):
-        print('clearing the vitals UI')
-        for x in self.tab5.winfo_children():
-            x.pack_forget()
-
         
-    
     def updatePatientUI(self):
         patient=PatientList.current()
         patientSummary = ""
@@ -426,10 +258,7 @@ class MainWindowFrame(tk.Frame):
 
             Wkg = []
             Wkg_date= []
-            
-            BMI=[]
-            BMI_date =[]
-            
+                        
             HCM=[]
             HCM_date = []
             
@@ -469,13 +298,7 @@ class MainWindowFrame(tk.Frame):
                     Wkg.append(vitals_object['Wkg'])
                     Wkg_datetime = datetime.strptime((vitals_object['datetime']),DATE_TIME_FORMAT)
                     Wkg_date.append(Wkg_datetime)
-            
-            for vitals_object in patient['vitals']:
-                if 'BMI' in vitals_object: 
-                    BMI.append(vitals_object['BMI'])
-                    BMI_datetime = datetime.strptime((vitals_object['datetime']),DATE_TIME_FORMAT)
-                    BMI_date.append(BMI_datetime)
-            
+                        
             for vitals_object in patient['vitals']:
                 if 'HCM' in vitals_object: 
                     HCM.append(vitals_object['HCM'])
