@@ -38,84 +38,136 @@
         "problems":[{"ICD10code":"J1281"}],
         "vitals":[
             {
-                "datetime": "2021-04-18T10:00:00.000Z",
-                "P": 108,
-                "R": 27,
-                "POX": 90,
+                "datetime": "2021-04-14T10:00:00.000Z",
+                "P": 121,
+                "R": 23,
+                "POX": 89,
                 "BP": {"sys": 160, "dia": 90},
                 "Wkg": 91.17,
-                "HCM": 142.56,
-                "PN": 6,
+                "HCM": 140.56,
+                "PN": 8,
+                "AuthIEN": 600
+            },
+            {
+                "datetime": "2021-04-16T10:00:00.000Z",
+                "P": 108,
+                "R": 27,
+                "POX": 80,
+                "BP": {"sys": 180, "dia": 90},
+                "Wkg": 87.17,
+                "HCM": 141.56,
+                "PN": 2,
                 "AuthIEN": 600
             },
             {
                 "datetime": "2021-04-19T10:00:00.000Z",
-                "P": 108,
-                "R": 27,
-                "POX": 90,
-                "BP": {"sys": 160, "dia": 90},
-                "Wkg": 91.17,
+                "P": 98,
+                "R": 25,
+                "POX": 110,
+                "BP": {"sys": 170, "dia": 100},
+                "Wkg": 90.17,
                 "HCM": 142.56,
+                "PN": 8,
+                "AuthIEN": 600
+            },
+            {
+                "datetime": "2021-04-20T10:00:00.000Z",
+                "P": 111,
+                "R": 30,
+                "POX": 90,
+                "BP": {"sys": 170, "dia": 80},
+                "Wkg": 91.17,
+                "HCM": 143.56,
                 "PN": 6,
                 "AuthIEN": 600
             }
             ]
     },
-    {   "id":12347,
-        "name":"Rob Swanson",
-        "dob":"1981-04-23T18:25:43.511Z",
-        "gender":"Male",        
+
+    {   "id":125,
+        "name":"Tony T. Tiger",
+        "dob":"1960-04-23T18:25:43.511Z",
+        "gender":"male",        
         "contact":{
             "person":{
-                "name":"Frank Moses",
-                "phone":"985-435-2765",
-                "relation":"Father"
+                "name":"Pop Krispy",
+                "phone":"213-765-2345",
+                "relation":"Common-law"
             },
-            "eMail":"rob@foo.com",
+            "eMail":"tony@foo.com",
             "address":{
-                "street":"154 Benoit Street",
-                "city":"Michigan"},
-                "telephone":"765-123-5364",
-                "cell":"123-647-1125"},
-        "allergies":[],                
+                "street":"12 Bacon Street",
+                "city":"Detroit"},
+                "telephone":"617-555-1212",
+                "cell":"617-555-1761"},
+        "allergies":[],
         "orders":{
             "medications":[
-                {"DIN":"00883751", "Freq": "TT BID"}],
-
+                {"DIN": "00356476", "dose": "2000mg","Freq": "TTTT QD"},
+                {"DIN": "00620548", "dose": "2000mg","Freq": "TT BID"},
+                {"DIN": "02150328", "dose": "2000mg","Freq": "T QD"}
+            ],
             "tests":[
-                {"LOINC_NUM":"95411-5","ProviderIEN":"45","patientMRN":"12345", "result":{"value":"1st dose","Time":"09-11-2013 6:04"}},
-                {"LOINC_NUM":"95411-5","ProviderIEN":"45","patientMRN":"12345", "result":{"value":"2nd dose","Time":"09-11-2013 6:04"}}
+                {"LOINC_NUM": "95406-5","ProviderIEN": "45", "patientMRN":"12345", "result":{"value":"positive","Time":"09-11-2013 6:04"}}
             ],
             "administration":[
-                {"DIN":"00883751 ", "ProviderIEN":"63", "patientMRN":"12345", "Time":"09-12-2013 14:04"},
-                {"DIN":"00883751", "ProviderIEN":"65", "patientMRN":"12345", "Time":"09-13-2013 14:04"}]          
+                {"DIN":"00356476", "ProviderIEN":"65", "patientMRN":"12345", "Time":"09-12-2013 6:04"},
+                {"DIN":"00620548", "ProviderIEN":"65", "patientMRN":"12345", "Time":"09-13-2013 6:04"},
+                {"DIN":"00356476", "ProviderIEN":"65", "patientMRN":"12345", "Time":"09-12-2013 12:04"},
+                {"DIN":"00620548", "ProviderIEN":"65", "patientMRN":"12345", "Time":"09-13-2013 12:04"},
+                {"DIN":"02150328", "ProviderIEN":"65", "patientMRN":"12345", "Time":"09-13-2013 12:04"},
+                {"DIN":"00356476", "ProviderIEN":"63", "patientMRN":"12345", "Time":"09-12-2013 18:04"},
+                {"DIN":"00356476", "ProviderIEN":"63", "patientMRN":"12345", "Time":"09-13-2013 00:04"}
+            ]  
         },
-        "problems":[{"ICD10code":"A281"}],
+        "problems":[{"ICD10code":"J1281"}],
         "vitals":[
             {
-                "datetime": "2021-04-18T10:00:00.000Z",
-                "P": 108,
-                "R": 27,
-                "POX": 90,
-                "BP": {"sys": 160, "dia": 90},
-                "Wkg": 91.17,
+                "datetime": "2021-04-12T10:00:00.000Z",
+                "P": 98,
+                "R": 25,
+                "POX": 110,
+                "BP": {"sys": 170, "dia": 100},
+                "Wkg": 90.17,
                 "HCM": 142.56,
-                "PN": 6,
+                "PN": 8,
                 "AuthIEN": 600
             },
             {
-                "datetime": "2021-04-19T10:00:00.000Z",
-                "P": 108,
-                "R": 27,
-                "POX": 90,
+                "datetime": "2021-04-14T10:00:00.000Z",
+                "P": 121,
+                "R": 23,
+                "POX": 89,
                 "BP": {"sys": 160, "dia": 90},
                 "Wkg": 91.17,
-                "HCM": 142.56,
+                "HCM": 140.56,
+                "PN": 8,
+                "AuthIEN": 600
+            },
+            {
+                "datetime": "2021-04-16T10:00:00.000Z",
+                "P": 108,
+                "R": 27,
+                "POX": 80,
+                "BP": {"sys": 180, "dia": 90},
+                "Wkg": 87.17,
+                "HCM": 141.56,
+                "PN": 2,
+                "AuthIEN": 600
+            },
+            {
+                "datetime": "2021-04-20T10:00:00.000Z",
+                "P": 111,
+                "R": 30,
+                "POX": 90,
+                "BP": {"sys": 170, "dia": 80},
+                "Wkg": 91.17,
+                "HCM": 143.56,
                 "PN": 6,
                 "AuthIEN": 600
             }
         ]
-    },
+        },
     {   "id":13,
         "name":"Claire Farron",
         "dob":"1982-04-23T18:25:43.511Z",       
@@ -149,12 +201,12 @@
         "vitals":[            
             {
                 "datetime": "2021-04-18T10:00:00.000Z",
-                "P": 108,
-                "R": 27,
+                "P": 111,
+                "R": 30,
                 "POX": 90,
-                "BP": {"sys": 160, "dia": 90},
+                "BP": {"sys": 170, "dia": 80},
                 "Wkg": 91.17,
-                "HCM": 142.56,
+                "HCM": 143.56,
                 "PN": 6,
                 "AuthIEN": 600
             },
@@ -204,6 +256,84 @@
             ]   
         },
         "problems":[{"ICD10code":"B342"}],
-        "vitals":[]
+        "vitals":[
+            {
+                "datetime": "2021-04-11T10:00:00.000Z",
+                "P": 111,
+                "R": 30,
+                "POX": 90,
+                "BP": {"sys": 170, "dia": 80},
+                "Wkg": 91.17,
+                "HCM": 143.56,
+                "PN": 6,
+                "AuthIEN": 600
+            },
+            {
+                "datetime": "2021-04-14T10:00:00.000Z",
+                "P": 121,
+                "R": 23,
+                "POX": 89,
+                "BP": {"sys": 160, "dia": 90},
+                "Wkg": 91.17,
+                "HCM": 140.56,
+                "PN": 8,
+                "AuthIEN": 600
+            }
+        ]
+    },
+    {   "id":13,
+        "name":"Dr. Phil",
+        "dob":"1967-04-23T18:25:43.511Z",       
+        "gender":"Male",        
+        "contact":{
+            "person":{
+                "name":"Sarah Palin",
+                "phone":"013-131-1323",
+                "relation":"Friend"
+            },
+            "eMail":"therapy4u@foo.com",
+            "address":{
+                "street":"13-3 Returns Street",
+                "city":"Fantasyland"},
+                "telephone":"617-555-1212",
+                "cell":"617-555-1761"},
+        "allergies":["penicillin"],
+        "orders":{
+            "medications":[
+                {"DIN":"00544884", "Freq": "TT BID"}],
+            "tests":[
+                {"LOINC_NUM":"95411-5","ProviderIEN":"45","patientMRN":"12345", "result":{"value":"1st dose","Time":"2021-04-19T10:00:00.000Z"}},
+                {"LOINC_NUM":"95411-5","ProviderIEN":"45","patientMRN":"12345", "result":{"value":"2nd dose","Time":"2021-04-19T10:00:00.000Z"}}
+            ],
+            "administration":[
+                {"DIN":"00544884", "ProviderIEN":"018", "patientMRN":"13", "Time":"2021-04-19T10:00:00.000Z"}
+            ]      
+        },
+        "problems":[{"ICD10code":"A200"}],
+        
+        "vitals":[            
+            {
+                "datetime": "2021-04-18T10:00:00.000Z",
+                "P": 111,
+                "R": 30,
+                "POX": 90,
+                "BP": {"sys": 170, "dia": 80},
+                "Wkg": 91.17,
+                "HCM": 143.56,
+                "PN": 6,
+                "AuthIEN": 600
+            },
+            {
+                "datetime": "2021-04-19T10:00:00.000Z",
+                "P": 108,
+                "R": 27,
+                "POX": 90,
+                "BP": {"sys": 160, "dia": 90},
+                "Wkg": 91.17,
+                "HCM": 142.56,
+                "PN": 6,
+                "AuthIEN": 600
+            }
+        ]
     }
 ]

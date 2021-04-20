@@ -417,7 +417,7 @@ class TestClass3_pymongo_healthcare_MiniEMR(unittest.TestCase):
             
         def test_case11_bob_test_update_record_with_photo(self):
                 '''update Bob Test patient record with the photo'''
-                BTEST_PATIENT_QUERY={'id': 12345} 
+                BTEST_PATIENT_QUERY={'id': 15} 
                 fs = gridfs.GridFS(self.db)
                 with fs.get_last_version(self.BTEST_PHOTO_FILE_NAME) as img:
                         print('Found image file with id: ',img._id)  
