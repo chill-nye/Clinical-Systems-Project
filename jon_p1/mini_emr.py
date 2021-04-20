@@ -135,24 +135,11 @@ class MainWindowFrame(tk.Frame):
                 else:
                     self.problemsListbox.insert('end',query_result["desc"])                    
                     patientSummary+="<li>"+query_result["desc"]+"</li>"        
-
-        #vitals + populate Vitals tab
-        # patientSummary+="<br/><b><u>Vitals</u></b>:<ul>"
-        # self.vitalsListbox.delete(0,self.vitalsListbox.size()-1)
-        # if len(patient['vitals']) > 0:
-        #     for i in patient['vitals']:
-        #         if i["type"] == "BP":
-        #             self.vitalsListbox.insert('end',i["type"]+i["value"]["sys"]+i["value"]["dia"])
-        #             patientSummary+= str(i["type"][-1]+i["value"]["sys"][-1]+i["value"]["dia"][-1])
-        #         else:
-        #             self.vitalsListbox.insert('end',i["type"]+i["value"])
-        #             patientSummary+= str(i["type"]+i["value"][-1])
-        # else:
-        #     orders_labs = '<li>No current labs found</li>'
-        # patientSummary += "</ul>"
-
+        patientSummary += "</ul>"
+        
+        #vitals last updated data
+        patientSummary+= '<br/><b><u>Last Vitals Values</u></b>:<ul>'
         self.updateVitalsUI()        
-        patientSummary+= 'Last Vitals Values: <ul>' 
         LastMeasuredVitalStr=""
         for vt in self.vital_data_series:
             serieslength = len(self.vital_data_series[vt])
@@ -160,9 +147,8 @@ class MainWindowFrame(tk.Frame):
                 idx=VITAL_TYPE_LIST.index(vt)
                 LastVal = self.vital_data_series[vt][serieslength-1]
                 LastMeasuredVitalStr += "<li>" + VITAL_TYPE_LABELS[idx]+ " " +str(LastVal["value"])+" measured on: " + LastVal["datetime"].strftime("%D-%H:%m:%S") + "</li>"
-                
-        
         patientSummary+= LastMeasuredVitalStr + '<ul>'
+        patientSummary += "</ul>"
 
         #administration + popoulate Report tab
         patientSummary += '<br/><b><u>Administration Events</u></b>:<ul>'
