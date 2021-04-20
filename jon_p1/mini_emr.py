@@ -34,13 +34,6 @@ from datetime import datetime
 from datetime import timedelta
 
 from tk_html_widgets import HTMLLabel
-
-import matplotlib
-matplotlib.use("TkAgg")
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-from matplotlib.figure import Figure
-import matplotlib.pyplot as plt
-import matplotlib.dates as md
 DB_DATE_TIME_FORMAT="%Y-%m-%d"
 
 class MainWindowFrame(tk.Frame):
@@ -118,7 +111,7 @@ class MainWindowFrame(tk.Frame):
             for test in patient["orders"]["tests"]:
                 query_result=MiniEMRMongo.db.loinc.find_one({'LOINC_NUM': test['LOINC_NUM']})
                 query_result_doc=MiniEMRMongo.db.employees.find_one({'IEN': test['ProviderIEN']})
-                self.ordersListbox.insert('end', query_result["Shortname"]+', '+query_result["LOINC_NUM"]+', by '+query_result_doc['full_name']+', on '+ test["result"]["Time"])
+                self.ordersListbox.insert('end', query_result["LOINC_NUM"]+': '+query_result["Shortname"].replace('"','')+', by '+query_result_doc['full_name']+', on '+ test["result"]["Time"])
                 patientSummary += '<li>{}</li>'.format(query_result['Shortname'])
         else:
             orders_labs = '<li>No current labs found</li>'
@@ -188,10 +181,7 @@ class MainWindowFrame(tk.Frame):
         except:
             vaccineData += '<li>No vaccination data found</li>'
         self.vaccine_label.set_html(vaccineData)
-        #list meds
-        # self.medsListbox.delete(0,self.medsListbox.size()-1)
-        # for med in patient["orders"]["medications"]:
-        #     self.medsListbox.insert('end', med["TRADENAME"]+', '+med["DIN"])
+
 
     def updateVitalsUI(self):
         patient=PatientList.current()        
@@ -250,122 +240,6 @@ class MainWindowFrame(tk.Frame):
                     LastMeasuredVitalStr += VITAL_TYPE_LABELS[idx]+ " " +str(LastVal["value"])+" measured on: " + LastVal["datetime"].strftime("%Y%M%D%H%M%S") + "\n"
             self.summaryScrolledText.insert('end',"Last Measured Vitals:\n" + LastMeasuredVitalStr)
 
-
-        #     sys = []
-        #     dia = []
-        #     BP_date = []
-            
-        #     R = []
-        #     R_date = []
-            
-        #     P = []
-        #     P_date = []
-
-        #     POX= []
-        #     POX_date= []
-
-        #     Wkg = []
-        #     Wkg_date= []
-                        
-        #     HCM=[]
-        #     HCM_date = []
-            
-        #     PN=[]
-        #     PN_date = []
-
-
-
-        #     for vitals_object in patient['vitals']:
-        #         if 'BP' in vitals_object: 
-        #             sys.append(vitals_object['BP']['sys'])
-        #             dia.append(vitals_object['BP']['dia'])
-        #             BP_datetime = datetime.strptime((vitals_object['datetime']),DATE_TIME_FORMAT)
-        #             BP_date.append(BP_datetime)
-
-        #     for vitals_object in patient['vitals']:
-        #         if 'R' in vitals_object: 
-        #             R.append(vitals_object['R'])
-        #             R_datetime = datetime.strptime((vitals_object['datetime']),DATE_TIME_FORMAT)
-        #             R_date.append(R_datetime)
-
-        #     for vitals_object in patient['vitals']:
-        #         if 'P' in vitals_object: 
-        #             P.append(vitals_object['P'])
-
-        #             P_datetime = datetime.strptime((vitals_object['datetime']),DATE_TIME_FORMAT)
-        #             P_date.append(P_datetime)
-            
-        #     for vitals_object in patient['vitals']:
-        #         if 'POX' in vitals_object: 
-        #             POX.append(vitals_object['POX'])
-        #             POX_datetime = datetime.strptime((vitals_object['datetime']),DATE_TIME_FORMAT)
-        #             POX_date.append( POX_datetime)
-            
-        #     for vitals_object in patient['vitals']:
-        #         if 'Wkg' in vitals_object: 
-        #             Wkg.append(vitals_object['Wkg'])
-        #             Wkg_datetime = datetime.strptime((vitals_object['datetime']),DATE_TIME_FORMAT)
-        #             Wkg_date.append(Wkg_datetime)
-                        
-        #     for vitals_object in patient['vitals']:
-        #         if 'HCM' in vitals_object: 
-        #             HCM.append(vitals_object['HCM'])
-        #             HCM_datetime = datetime.strptime((vitals_object['datetime']),DATE_TIME_FORMAT)
-        #             HCM_date.append(HCM_datetime)
-            
-        #     for vitals_object in patient['vitals']:
-        #         if 'PN' in vitals_object: 
-        #             PN.append(vitals_object['PN'])
-        #             PN_datetime = datetime.strptime((vitals_object['datetime']),DATE_TIME_FORMAT)
-        #             PN_date.append(PN_datetime)
-
-        #     try:
-        #         clear_space()
-        #     except:
-        #         print("no f...f")
-
-        #     f = plt.figure(figsize=(15,7.5),dpi=100)
-        #     f.subplots_adjust(hspace=0.5)
-
-        #     a = f.add_subplot(331, title="Respiration", ylabel="resp/min")
-        #     a.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
-        #     plt.xticks(rotation=90)
-        #     a.plot(R_date, R)
-
-        #     b = f.add_subplot(332, title='BP (sys/dia)' ,xlabel="systolic")
-        #     b.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
-        #     plt.xticks(rotation=90)
-        #     b.plot(BP_date, sys, label ='systolic')
-        #     b.plot(BP_date, dia, label = 'diastolic')
-
-        #     c = f.add_subplot(333, title = "Pulse",xlabel="", ylabel="bpm")
-        #     c.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
-        #     plt.xticks(rotation=90)
-        #     c.plot(P_date, P)
-
-        #     d = f.add_subplot(334, title = "Pulse Oximetry",xlabel="", ylabel="%O2")
-        #     d.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
-        #     plt.xticks(rotation=90)
-        #     d.plot(POX_date, POX)
-
-        #     e = f.add_subplot(335, title = "Weight",xlabel="", ylabel="kg")
-        #     e.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
-        #     plt.xticks(rotation=90)
-        #     e.plot(Wkg_date, Wkg)
-
-        #     g = f.add_subplot(337, title = "Height",xlabel="", ylabel="CM")
-        #     g.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
-        #     plt.xticks(rotation=90)
-        #     g.plot(HCM_date, HCM)
-
-        #     h = f.add_subplot(338, title = "Pain",xlabel="", ylabel="")
-        #     h.xaxis.set_major_formatter(md.DateFormatter("%y-%m-%d"))
-        #     plt.xticks(rotation=90)
-        #     h.plot(PN_date, PN)
-
-        # canvas = FigureCanvasTkAgg(f, self.frametest)
-        # canvas.get_tk_widget().pack(expand=True)
-        # canvas.draw()
 
     def clear_vitalsUI(self):
         print('clearing the vitals UI')
@@ -431,12 +305,6 @@ class MainWindowFrame(tk.Frame):
         tabControl.add(tab4, text='Orders')
         self.ordersListbox = Listbox(tab4)
         self.ordersListbox.pack(fill="both", expand=True)
-
-        tab5 = ttk.Frame(tabControl)
-        tabControl.add(tab5, text='VitalsDisplay')
-        self.frametest = tk.Frame(tab5)
-        self.frametest.config(width=1000,height=300)
-        self.frametest.pack(fill="both", expand=True)
 
         tab6 = ttk.Frame(tabControl)
         tabControl.add(tab6, text='Reports')
